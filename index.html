@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>김예찬 실수 잡기 · 영핏 지나티처</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background: #f0f4f4; color: #2B3A3D; min-height: 100vh;
+    display: flex; justify-content: center; padding: 20px 14px;
+    word-break: keep-all; overflow-wrap: break-word;
+  }
+  .wrap { width: 100%; max-width: 560px; }
+  .card { background: #fff; border-radius: 16px; padding: 26px 22px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-bottom: 14px; }
+  h1 { font-size: 1.25rem; color: #2F7C83; margin-bottom: 6px; line-height: 1.5; }
+  .sub { font-size: 0.9rem; color: #6B7B7E; margin-bottom: 18px; line-height: 1.85; }
+
+  /* ── 영핏 지나티처 로고 ── */
+  .logo { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; }
+  .logo svg { flex: none; display: block; }
+  .logo .wordmark { line-height: 1.25; }
+  .logo .wordmark .n { font-size: 0.88rem; font-weight: bold; color: #235E64; letter-spacing: -0.2px; }
+  .logo .wordmark .t { display: block; font-size: 0.68rem; color: #8fa5a1; letter-spacing: 0.5px; }
+
+  /* 영어 문장은 띄어쓰기 단위로만 줄바꿈 */
+  .en, .choice, .ord-tile { overflow-wrap: normal; word-break: keep-all; hyphens: none; }
+
+  input[type=text] { width: 100%; padding: 13px; font-size: 1.05rem; border: 1.5px solid #DBE4E5; border-radius: 10px; font-family: inherit; }
+  input[type=text]:focus { outline: none; border-color: #2F7C83; }
+  .lbl { display: block; font-size: 0.85rem; font-weight: bold; color: #235E64; margin-bottom: 7px; }
+  .btn { display: block; width: 100%; margin-top: 12px; padding: 14px; font-size: 1.03rem; font-weight: bold; color: #fff; background: #2F7C83; border: none; border-radius: 10px; cursor: pointer; text-align: left; line-height: 1.55; font-family: inherit; }
+  .btn:disabled { background: #b8c4c2; cursor: default; }
+  .btn.sub-btn { background: #8fa5a1; }
+  .btn.center { text-align: center; }
+  .btn.done { background: #cfe0dc; color: #4d6a64; }
+  .btn.clinic { background: #b5762f; }
+  .btn .cnt { display: inline-block; font-size: 0.8rem; font-weight: normal; opacity: 0.92; margin-left: 4px; }
+
+  .progress { font-size: 0.85rem; color: #6B7B7E; margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .srctag { display: inline-block; font-size: 0.75rem; color: #235E64; background: #E6F1F1; border-radius: 6px; padding: 3px 9px; margin-bottom: 10px; line-height: 1.5; }
+  .bar { height: 6px; background: #e3ecea; border-radius: 3px; margin-bottom: 14px; overflow: hidden; }
+  .bar > div { height: 100%; background: #2F7C83; border-radius: 3px; width: 0; transition: width .25s; }
+
+  .cardbox { background: #f2faf7; border: 1px solid #bfe0d6; border-left: 5px solid #2F7C83; border-radius: 12px; padding: 16px; margin-bottom: 14px; font-size: 0.95rem; line-height: 1.95; }
+  .cardbox h2 { font-size: 1.05rem; color: #235E64; margin-bottom: 10px; line-height: 1.5; }
+  .cardbox .ex { display: block; background: #fff; border-left: 3px solid #9dcfc3; border-radius: 6px; padding: 9px 11px; margin: 9px 0; font-size: 0.93rem; line-height: 1.95; }
+  .cardbox .my { display: block; background: #FFF6E8; border-left: 3px solid #e5cf8a; border-radius: 6px; padding: 9px 11px; margin: 9px 0; font-size: 0.93rem; line-height: 1.95; color: #4a4023; }
+  .cardbox .my b { color: #8a6400; }
+  .cardbox b { color: #235E64; }
+
+  details.tip { background: #f2faf7; border: 1px solid #bfe0d6; border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; font-size: 0.9rem; line-height: 1.9; }
+  details.tip summary { cursor: pointer; font-weight: bold; color: #235E64; font-size: 0.85rem; }
+  details.tip .inner { margin-top: 8px; }
+  details.tip b { color: #235E64; }
+  details.tip .ex { display: block; background: #fff; border-left: 3px solid #9dcfc3; border-radius: 6px; padding: 9px 11px; margin: 9px 0; }
+  details.tip .my { display: block; background: #FFF6E8; border-left: 3px solid #e5cf8a; border-radius: 6px; padding: 9px 11px; margin: 9px 0; color: #4a4023; }
+  details.tip .my b { color: #8a6400; }
+
+  .qtext { font-size: 1.06rem; line-height: 1.95; margin-bottom: 16px; }
+  .qtext .ko { display: block; font-size: 0.9em; color: #6B7B7E; margin-top: 3px; }
+  .choice { display: block; width: 100%; text-align: left; padding: 13px 14px; margin-bottom: 9px; font-size: 1.02rem; background: #f6f9f8; border: 1.5px solid #DBE4E5; border-radius: 10px; cursor: pointer; line-height: 1.6; font-family: inherit; color: #2B3A3D; }
+  .choice:active { background: #E6F1F1; }
+  .num { color: #2F7C83; font-weight: bold; margin-right: 7px; }
+  .keyhint { font-size: 0.78rem; color: #9aa8a5; text-align: center; margin-top: 10px; }
+
+  .score-big { font-size: 2rem; font-weight: bold; color: #2F7C83; text-align: center; margin: 10px 0; }
+  .exp { background: #f6f9f8; border-left: 4px solid #2F7C83; border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; font-size: 0.93rem; line-height: 1.9; }
+  .exp.wrong { border-left-color: #b5762f; background: #FFF6E8; }
+  .exp b { color: #235E64; }
+  .exp.wrong .exp-head b { color: #a2631f; }
+  .exp .ans-line { display: block; font-size: 0.85rem; color: #7a6a55; margin: 4px 0 6px; }
+
+  .whybox { background: #FFF6E8; border: 1px solid #e8d6b3; border-left: 5px solid #b5762f; border-radius: 12px; padding: 16px; margin-bottom: 14px; font-size: 0.95rem; line-height: 1.95; }
+  .whybox h2 { font-size: 1.02rem; color: #a2631f; margin-bottom: 10px; line-height: 1.5; }
+  .whybox .row { display: block; background: #fff; border-radius: 8px; padding: 9px 11px; margin: 8px 0; font-size: 0.93rem; line-height: 1.85; }
+  .whybox .row .k { color: #8a6400; font-weight: bold; }
+  .whybox b { color: #a2631f; }
+  .rulebox { background: #f2faf7; border: 1px solid #bfe0d6; border-left: 5px solid #2F7C83; border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; font-size: 0.94rem; line-height: 1.95; }
+  .rulebox .h { font-weight: bold; color: #235E64; display: block; margin-bottom: 5px; }
+  .rulebox b { color: #235E64; }
+
+  .ord-slot { min-height: 56px; background: #E6F1F1; border: 1.5px dashed #9dbdbd; border-radius: 10px; padding: 10px; margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+  .ord-ph { font-size: 0.85rem; color: #7f9a9a; }
+  .ord-pool { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+  .ord-tile { font-size: 1.02rem; padding: 10px 13px; background: #f6f9f8; border: 1.5px solid #DBE4E5; border-radius: 9px; cursor: pointer; font-family: inherit; color: #2B3A3D; line-height: 1.35; }
+  .ord-tile.picked { background: #2F7C83; color: #fff; border-color: #2F7C83; }
+  .ord-help { font-size: 0.82rem; color: #6B7B7E; line-height: 1.75; margin-bottom: 10px; }
+
+  .saybar { position: fixed; left: 0; right: 0; bottom: 0; background: #235E64; color: #fff; padding: 13px 16px; display: flex; align-items: center; gap: 11px; justify-content: center; z-index: 60; box-shadow: 0 -2px 14px rgba(0,0,0,0.2); }
+  .saybar .ico { flex: none; width: 24px; height: 24px; }
+  .saybar .lbl { display: block; font-size: 0.75rem; opacity: 0.85; letter-spacing: 0.3px; }
+  .saybar .txt { display: block; font-size: 1.02rem; font-weight: bold; line-height: 1.5; word-break: keep-all; overflow-wrap: normal; }
+  .soundrow { display: flex; align-items: flex-start; gap: 10px; margin-top: 16px; padding: 12px 13px; background: #E6F1F1; border-radius: 10px; }
+  .soundrow input { width: 19px; height: 19px; margin-top: 2px; flex: none; accent-color: #2F7C83; }
+  .soundrow label { font-size: 0.88rem; font-weight: bold; color: #235E64; cursor: pointer; line-height: 1.6; }
+  .soundrow label .note { display: block; font-size: 0.8rem; color: #6B7B7E; font-weight: normal; margin-top: 2px; }
+  .footer { text-align: center; font-size: 0.78rem; color: #9aa8a5; padding: 8px 0 26px; line-height: 1.8; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ══════ 시작 (이름 + 영역 선택) ══════ -->
+  <div class="card" id="start-card">
+    <div class="logo">
+      <svg viewBox="0 0 40 40" width="38" height="38" role="img" aria-label="영핏">
+        <rect width="40" height="40" rx="11" fill="#2F7C83"/>
+        <rect x="8.5" y="22" width="5.6" height="9.5" rx="2.2" fill="#FFF6E8"/>
+        <rect x="17.2" y="17" width="5.6" height="14.5" rx="2.2" fill="#FFF6E8" opacity="0.82"/>
+        <rect x="25.9" y="10.5" width="5.6" height="21" rx="2.2" fill="#FFF6E8"/>
+      </svg>
+      <div class="wordmark"><span class="n">영핏 지나티처</span><span class="t">영어를 핏하다</span></div>
+    </div>
+    <h1>예찬이의 실수 잡기<br>· 수량 표현 + much · many · little · few ·</h1>
+    <p class="sub">개념 카드 15장 + 문제 30문항 (5영역)<br>
+    지난 <b>수량 표현 80문항</b>에서 예찬이가 놓쳤던 곳을 <b>딱 5가지</b>로 모았어요.<br>
+    예찬이는 <b>몰라서 틀린 게 아니라 놓쳐서</b> 틀린 거예요. 확인 습관만 잡으면 돼요!<br>
+    <b>개념 카드 1장 → 그 개념 문제 2개</b>, 이렇게 15번 반복해요.<br>
+    틀린 문제가 있으면 <b>왜 틀렸는지 설명 → 오답 클리닉 문제</b>가 이어서 나와요.<br>
+    답을 고르면 <b>정답 문장을 영어 소리로 들려줘요.</b> 소리 내어 따라 말해 보세요!<br>
+    한 영역이 끝나면 결과를 복사해서 지나티처에게 카톡으로 보내주세요.<br>
+    푼 기록은 자동 저장되니 중간에 꺼져도 이어서 할 수 있어요.</p>
+    <label class="lbl" for="name-input">이름</label>
+    <input type="text" id="name-input" placeholder="이름을 입력하세요" maxlength="20" autocomplete="off">
+    <div class="soundrow">
+      <input type="checkbox" id="sound-on" checked>
+      <label for="sound-on">정답 영어를 소리로 듣기<span class="note">답을 고르면 다음 문제로 넘어가기 전에 정답 문장을 원어민 소리로 들려줘요.</span></label>
+    </div>
+    <button class="btn sub-btn center" id="sound-test" style="margin-top:9px">소리 테스트 — 눌러서 영어가 들리는지 확인해요</button>
+    <p class="keyhint" id="sound-msg" style="margin-top:9px; min-height:18px"></p>
+    <p class="keyhint" style="margin-top:4px; line-height:1.7; color:#b5762f">
+      카톡에서 바로 열면 소리가 안 날 수 있어요.<br>
+      소리가 안 들리면 화면 <b>오른쪽 위 점 세 개</b>를 눌러<br>
+      <b>‘다른 브라우저로 열기’</b>(크롬 · 사파리)를 선택해 주세요.
+    </p>
+    <p class="sub" id="sec-pick-hint" style="margin:18px 0 -2px">아래에서 시작할 영역을 골라 주세요 (1영역부터 순서대로 푸는 걸 추천해요)</p>
+    <button class="btn sec-start" data-sec="0" disabled>1영역 시작 · -s 자리 잡기 <span class="cnt">카드 3장 · 6문항</span></button>
+    <button class="btn sec-start" data-sec="1" disabled>2영역 시작 · much / many <span class="cnt">카드 3장 · 6문항</span></button>
+    <button class="btn sec-start" data-sec="2" disabled>3영역 시작 · a little / a few <span class="cnt">카드 3장 · 6문항</span></button>
+    <button class="btn sec-start" data-sec="3" disabled>4영역 시작 · 단위 낱말 짝 맞추기 <span class="cnt">카드 3장 · 6문항</span></button>
+    <button class="btn sec-start" data-sec="4" disabled>5영역 시작 · a pair of + 자주 틀리는 철자 <span class="cnt">카드 3장 · 6문항</span></button>
+    <p class="keyhint" id="sec-done-note" style="margin-top:12px"></p>
+  </div>
+
+  <!-- ══════ 이어하기 ══════ -->
+  <div class="card hidden" id="resume-card">
+    <div class="logo">
+      <svg viewBox="0 0 40 40" width="38" height="38" role="img" aria-label="영핏">
+        <rect width="40" height="40" rx="11" fill="#2F7C83"/>
+        <rect x="8.5" y="22" width="5.6" height="9.5" rx="2.2" fill="#FFF6E8"/>
+        <rect x="17.2" y="17" width="5.6" height="14.5" rx="2.2" fill="#FFF6E8" opacity="0.82"/>
+        <rect x="25.9" y="10.5" width="5.6" height="21" rx="2.2" fill="#FFF6E8"/>
+      </svg>
+      <div class="wordmark"><span class="n">영핏 지나티처</span><span class="t">영어를 핏하다</span></div>
+    </div>
+    <h1>이어서 풀 수 있어요</h1>
+    <p class="sub" id="resume-info"></p>
+    <button class="btn center" id="resume-btn">이어서 하기</button>
+    <button class="btn sub-btn center" id="restart-btn">처음부터 다시 하기</button>
+  </div>
+
+  <!-- ══════ 개념 카드 ══════ -->
+  <div class="card hidden" id="cards-card">
+    <div class="logo">
+      <svg viewBox="0 0 40 40" width="30" height="30" role="img" aria-label="영핏">
+        <rect width="40" height="40" rx="11" fill="#2F7C83"/>
+        <rect x="8.5" y="22" width="5.6" height="9.5" rx="2.2" fill="#FFF6E8"/>
+        <rect x="17.2" y="17" width="5.6" height="14.5" rx="2.2" fill="#FFF6E8" opacity="0.82"/>
+        <rect x="25.9" y="10.5" width="5.6" height="21" rx="2.2" fill="#FFF6E8"/>
+      </svg>
+      <div class="wordmark"><span class="n">영핏 지나티처</span></div>
+    </div>
+    <div class="progress"><span id="card-num"></span><span id="card-sec"></span></div>
+    <div class="bar"><div id="card-bar"></div></div>
+    <div class="cardbox" id="cardbox"></div>
+    <button class="btn center" id="card-next">개념 확인 끝! 문제 2개 풀러 가기</button>
+    <button class="btn sub-btn center" id="card-skip">카드 건너뛰고 바로 문제 풀기</button>
+  </div>
+
+  <!-- ══════ 문제 ══════ -->
+  <div class="card hidden" id="quiz-card">
+    <div class="logo">
+      <svg viewBox="0 0 40 40" width="30" height="30" role="img" aria-label="영핏">
+        <rect width="40" height="40" rx="11" fill="#2F7C83"/>
+        <rect x="8.5" y="22" width="5.6" height="9.5" rx="2.2" fill="#FFF6E8"/>
+        <rect x="17.2" y="17" width="5.6" height="14.5" rx="2.2" fill="#FFF6E8" opacity="0.82"/>
+        <rect x="25.9" y="10.5" width="5.6" height="21" rx="2.2" fill="#FFF6E8"/>
+      </svg>
+      <div class="wordmark"><span class="n">영핏 지나티처</span></div>
+    </div>
+    <div class="progress"><span id="prog-num"></span><span id="prog-pct"></span></div>
+    <div class="bar"><div id="bar-fill"></div></div>
+    <span class="srctag" id="srctag"></span>
+    <details class="tip" id="tipbox"><summary>개념 카드 다시 보기 (헷갈리면 눌러요)</summary><div class="inner" id="tipinner"></div></details>
+    <div class="qtext" id="qtext"></div>
+    <div id="choices"></div>
+    <p class="keyhint" id="keyhint">숫자키 1~4로도 선택할 수 있어요</p>
+  </div>
+
+  <!-- ══════ 영역 결과 ══════ -->
+  <div class="card hidden" id="sec-result-card">
+    <div class="logo">
+      <svg viewBox="0 0 40 40" width="30" height="30" role="img" aria-label="영핏">
+        <rect width="40" height="40" rx="11" fill="#2F7C83"/>
+        <rect x="8.5" y="22" width="5.6" height="9.5" rx="2.2" fill="#FFF6E8"/>
+        <rect x="17.2" y="17" width="5.6" height="14.5" rx="2.2" fill="#FFF6E8" opacity="0.82"/>
+        <rect x="25.9" y="10.5" width="5.6" height="21" rx="2.2" fill="#FFF6E8"/>
+      </svg>
+      <div class="wordmark"><span class="n">영핏 지나티처</span></div>
+    </div>
+    <h1 id="sec-result-title"></h1>
+    <div class="score-big" id="sec-score"></div>
+    <p class="sub" id="sec-wrong" style="text-align:center"></p>
+    <button class="btn center" id="sec-copy-btn"></button>
+    <button class="btn clinic center hidden" id="clinic-start-btn"></button>
+    <button class="btn center" id="next-sec-btn" style="background:#38699e"></button>
+    <button class="btn sub-btn center" id="pick-sec-btn">영역 선택으로 돌아가기</button>
+    <div id="total-block" class="hidden" style="margin-top:22px; border-top:2px dashed #DBE4E5; padding-top:18px">
+      <p class="sub" style="text-align:center; margin-bottom:4px">전체 최종 결과</p>
+      <div class="score-big" id="total-score"></div>
+      <p class="sub" id="total-detail" style="text-align:center"></p>
+      <button class="btn center" id="total-copy-btn">전체 결과 한 번에 복사 (카톡용)</button>
+    </div>
+    <div style="margin-top:20px">
+      <p class="sub" style="margin-bottom:10px">이 영역 해설 — 맞은 문제도 한 번씩 읽어보세요!</p>
+      <div id="sec-explanations"></div>
+    </div>
+  </div>
+
+  <!-- ══════ 오답 클리닉 · 왜 틀렸을까 ══════ -->
+  <div class="card hidden" id="clinic-why-card">
+    <div class="logo">
+      <svg viewBox="0 0 40 40" width="30" height="30" role="img" aria-label="영핏">
+        <rect width="40" height="40" rx="11" fill="#2F7C83"/>
+        <rect x="8.5" y="22" width="5.6" height="9.5" rx="2.2" fill="#FFF6E8"/>
+        <rect x="17.2" y="17" width="5.6" height="14.5" rx="2.2" fill="#FFF6E8" opacity="0.82"/>
+        <rect x="25.9" y="10.5" width="5.6" height="21" rx="2.2" fill="#FFF6E8"/>
+      </svg>
+      <div class="wordmark"><span class="n">영핏 지나티처</span></div>
+    </div>
+    <div class="progress"><span id="why-num"></span><span>오답 클리닉</span></div>
+    <div class="bar"><div id="why-bar"></div></div>
+    <div class="whybox" id="whybox"></div>
+    <div class="rulebox" id="rulebox"></div>
+    <button class="btn clinic center" id="why-next">이해했어요! 비슷한 문제 풀어보기</button>
+  </div>
+
+  <!-- ══════ 오답 클리닉 · 문제 ══════ -->
+  <div class="card hidden" id="clinic-card">
+    <div class="logo">
+      <svg viewBox="0 0 40 40" width="30" height="30" role="img" aria-label="영핏">
+        <rect width="40" height="40" rx="11" fill="#2F7C83"/>
+        <rect x="8.5" y="22" width="5.6" height="9.5" rx="2.2" fill="#FFF6E8"/>
+        <rect x="17.2" y="17" width="5.6" height="14.5" rx="2.2" fill="#FFF6E8" opacity="0.82"/>
+        <rect x="25.9" y="10.5" width="5.6" height="21" rx="2.2" fill="#FFF6E8"/>
+      </svg>
+      <div class="wordmark"><span class="n">영핏 지나티처</span></div>
+    </div>
+    <div class="progress"><span id="cq-num"></span><span>오답 클리닉</span></div>
+    <div class="bar"><div id="cq-bar"></div></div>
+    <span class="srctag" id="cq-src"></span>
+    <div class="qtext" id="cq-text"></div>
+    <div id="cq-choices"></div>
+    <p class="keyhint" id="cq-keyhint">숫자키 1~4로도 선택할 수 있어요</p>
+  </div>
+
+  <!-- ══════ 오답 클리닉 결과 ══════ -->
+  <div class="card hidden" id="clinic-result-card">
+    <div class="logo">
+      <svg viewBox="0 0 40 40" width="30" height="30" role="img" aria-label="영핏">
+        <rect width="40" height="40" rx="11" fill="#2F7C83"/>
+        <rect x="8.5" y="22" width="5.6" height="9.5" rx="2.2" fill="#FFF6E8"/>
+        <rect x="17.2" y="17" width="5.6" height="14.5" rx="2.2" fill="#FFF6E8" opacity="0.82"/>
+        <rect x="25.9" y="10.5" width="5.6" height="21" rx="2.2" fill="#FFF6E8"/>
+      </svg>
+      <div class="wordmark"><span class="n">영핏 지나티처</span></div>
+    </div>
+    <h1 id="cr-title">오답 클리닉 완료!</h1>
+    <div class="score-big" id="cr-score"></div>
+    <p class="sub" id="cr-msg" style="text-align:center"></p>
+    <button class="btn center" id="cr-copy-btn">클리닉 결과 복사 (카톡용)</button>
+    <button class="btn center" id="cr-next-btn" style="background:#38699e"></button>
+    <button class="btn sub-btn center" id="cr-pick-btn">영역 선택으로 돌아가기</button>
+    <div style="margin-top:20px">
+      <p class="sub" style="margin-bottom:10px">클리닉 해설</p>
+      <div id="cr-explanations"></div>
+    </div>
+  </div>
+
+  <div class="saybar hidden" id="saybar">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="#fff"></polygon>
+      <path d="M15.5 8.6a4.6 4.6 0 0 1 0 6.8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"></path>
+      <path d="M18.6 5.6a9 9 0 0 1 0 12.8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+    <div><span class="lbl">정답 듣기</span><span class="txt" id="saytext"></span></div>
+  </div>
+
+  <div class="footer">
+    영핏 지나티처 · 영어를 핏하다<br>
+    앞에 s 있나? 뒤에 s 없나? 예찬이 화이팅!
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ══════════ 결과 기록 (영핏 공통 전송코드 v1 — 변경 금지) ══════════ */
+var ENGFIT_SUBMIT_URL = "https://script.google.com/macros/s/AKfycbz5IC3cEtaBGW10qZhrjwtjdtGugmcmYb4ZTHS4k-1LOqTRYzW-LfoAPyFB_ShjAqNp/exec";
+async function engfitSubmit(r) {
+  var body = JSON.stringify(r);
+  try {
+    var res = await fetch(ENGFIT_SUBMIT_URL, { method: "POST", body: body });
+    var j = await res.json();
+    return j.ok === true;
+  } catch (e) {
+    try {
+      await fetch(ENGFIT_SUBMIT_URL, { method: "POST", mode: "no-cors", body: body });
+      return true;
+    } catch (e2) { return false; }
+  }
+}
+
+
+/* ══════════ 개념 카드 15장 ══════════ */
+var TIPS = {};
+
+var A1 = "카드 1. 세는 것은 단위! -s는 앞에만 붙여요";
+var A2 = "카드 2. of 뒤 명사에는 -s를 붙이지 않아요";
+var A3 = "카드 3. 쓰고 나서 -s 두 곳을 확인하는 습관";
+var B1 = "카드 4. 셀 수 있으면 many, 셀 수 없으면 much";
+var B2 = "카드 5. 셀 수 없는 대표 낱말 5개";
+var B3 = "카드 6. How much · How many";
+var C1 = "카드 7. a few는 셀 수 있는 것, a little은 셀 수 없는 것";
+var C2 = "카드 8. a를 빼면 뜻이 반대가 돼요";
+var C3 = "카드 9. 뒤 낱말에 -s가 있나만 보면 끝";
+var D1 = "카드 10. 얇게 썬 건 slice, 덩어리는 piece";
+var D2 = "카드 11. cup · glass · bottle · bowl";
+var D3 = "카드 12. 눈에 안 보이는 것도 piece로 세요";
+var E1 = "카드 13. 짝으로 된 것은 a pair of + 언제나 -s";
+var E2 = "카드 14. 여러 짝이면 pairs of";
+var E3 = "카드 15. 받아쓰기에서 자주 놓치는 철자";
+
+TIPS[A1] =
+"수량 표현에서 <b>진짜 세는 것</b>은 뒤의 명사가 아니라 <b>앞의 단위</b>예요." +
+"<span class='ex'>two <b>pieces</b> of cake — 세는 건 <b>조각(pieces)</b>이지 케이크가 아니에요<br>" +
+"three <b>cups</b> of coffee — 세는 건 <b>잔(cups)</b>이에요</span>" +
+"그래서 둘 이상이면 <b>단위에만</b> -s를 붙여요." +
+"<span class='ex'>two <b>pieces</b> of cake · three <b>cups</b> of coffee<br>" +
+"two <b>glasses</b> of water · two <b>bottles</b> of wine<br>" +
+"two <b>loaves</b> of bread · four <b>slices</b> of cheese<br>" +
+"two <b>sheets</b> of paper · two <b>spoonfuls</b> of honey</span>" +
+"<span class='my'>예찬이가 지난 학습지에서 <b>two piece of cake</b>, <b>two sheet of paper</b>, <b>two loaf of bread</b>처럼<br>" +
+"단위에 -s를 빠뜨린 곳이 여러 군데 있었어요. 낱말 선택은 <b>전부 정확</b>했답니다!<br>" +
+"고를 줄 아는 게 훨씬 어려운 일이에요. 이제 <b>-s 하나</b>만 챙기면 돼요.<br>" +
+"기억법: <b>숫자 바로 뒤 낱말에 -s!</b> 숫자가 보이면 그 다음 낱말을 손가락으로 짚어요.</span>";
+
+TIPS[A2] =
+"이번에는 반대예요. <b>of 뒤에 오는 명사</b>에는 -s를 붙이지 않아요." +
+"<span class='ex'>three cups of <b>coffee</b> (coffees ✗)<br>" +
+"two bottles of <b>wine</b> (wines ✗)<br>" +
+"a spoonful of <b>salt</b> (salts ✗)<br>" +
+"two pieces of <b>cake</b> (cakes ✗)</span>" +
+"왜 그럴까요? of 뒤에 오는 건 <b>셀 수 없는 것</b>이기 때문이에요. 셀 수 없으니 복수형이 없어요." +
+"<span class='ex'>coffee · wine · salt · water · bread · cheese · paper · advice<br>" +
+"전부 세지 못하는 것이라 <b>단위를 빌려</b> 세는 거예요.</span>" +
+"<span class='my'>지난 학습지에서 <b>three cups of coffees</b>, <b>two bottles of wines</b>, <b>a spoonful of salts</b>처럼<br>" +
+"of 뒤에 -s가 붙은 곳이 있었어요. 앞의 단위는 <b>모두 정확</b>했답니다!<br>" +
+"한 줄 정리: <b>of 뒤에는 -s가 없다!</b> of가 보이면 그 다음 낱말은 그냥 두기.</span>";
+
+TIPS[A3] =
+"이제 두 규칙을 합치면 확인할 곳이 딱 <b>두 군데</b>예요. 다 쓰고 나서 순서대로 짚어 보세요." +
+"<span class='ex'><b>two   pieces   of   cake</b><br>" +
+"&nbsp;&nbsp;①숫자 → ②단위에 -s 있나? → ③of → ④of 뒤에 -s 없나?</span>" +
+"<span class='ex'>확인 예시<br>" +
+"two <b>glasses</b> of <b>water</b> ⭕ — 앞에 -s 있고, 뒤에 -s 없음<br>" +
+"two <s>glass</s> of <s>waters</s> ✗ — 두 곳 다 반대로 되어 있어요</span>" +
+"<span class='my'>예찬이는 <b>알고 있는데 놓치는 것</b>이지 몰라서 틀리는 게 아니에요.<br>" +
+"그래서 <b>확인하는 순서</b>를 정해 두면 실수가 확 줄어요.<br><br>" +
+"쓰고 나서 소리 내어 이렇게 말해 보세요.<br>" +
+"'<b>앞에 s 있나? 뒤에 s 없나?</b>' — 두 번만 물어보면 끝이에요!</span>";
+
+TIPS[B1] =
+"<b>many</b>와 <b>much</b>는 둘 다 '많은'이지만 쓰는 곳이 달라요." +
+"<span class='ex'><b>many</b> + 셀 수 있는 것 (뒤에 <b>-s</b>가 붙어요)<br>" +
+"many <b>books</b> · many <b>apples</b> · many <b>photos</b> · many <b>friends</b></span>" +
+"<span class='ex'><b>much</b> + 셀 수 없는 것 (-s가 없어요)<br>" +
+"much <b>homework</b> · much <b>time</b> · much <b>money</b> · much <b>water</b></span>" +
+"구별하는 가장 빠른 방법이 있어요." +
+"<span class='ex'>뒤 낱말에 <b>-s가 붙어 있으면 many</b><br>" +
+"뒤 낱말에 <b>-s가 없으면 much</b><br>" +
+"눈으로 -s만 확인하면 돼요!</span>" +
+"<span class='my'>예찬이가 <b>many books</b>와 <b>many apples</b>를 정확하게 골랐어요!<br>" +
+"셀 수 있는 쪽은 이미 잘 알고 있다는 뜻이에요. 이제 <b>much</b> 쪽만 카드 5에서 확실히 해요.</span>";
+
+TIPS[B2] =
+"학생들이 가장 많이 헷갈리는 <b>셀 수 없는 낱말 다섯 개</b>예요. 이것만 외우면 대부분 해결돼요." +
+"<span class='ex'><b>homework</b> 숙제 · <b>time</b> 시간 · <b>money</b> 돈<br>" +
+"<b>work</b> 일 · <b>information</b> 정보</span>" +
+"전부 <b>-s를 붙이지 않아요</b>. 그래서 앞에 오는 말은 언제나 <b>much</b>예요." +
+"<span class='ex'>too <b>much homework</b> (homeworks ✗)<br>" +
+"<b>much time</b> · <b>much money</b> · <b>much work</b> · <b>much information</b></span>" +
+"세고 싶으면 단위를 빌려요." +
+"<span class='ex'>a <b>piece of</b> information — 정보 하나<br>" +
+"a <b>piece of</b> advice — 충고 한 마디</span>" +
+"<span class='my'>지난 학습지에서 <b>many homework</b>, <b>many money</b>라고 쓴 곳이 있었어요.<br>" +
+"둘 다 -s가 붙지 않는 낱말이라 <b>much</b>랍니다.<br>" +
+"기억법: <b>숙제 · 시간 · 돈 · 일 · 정보</b> — 다섯 개는 언제나 much!</span>";
+
+TIPS[B3] =
+"물어볼 때도 규칙은 똑같아요." +
+"<span class='ex'><b>How much</b> + 셀 수 없는 것<br>" +
+"How <b>much money</b> do you have? (돈이 얼마나 있니?)<br>" +
+"How <b>much time</b> do we have?</span>" +
+"<span class='ex'><b>How many</b> + 셀 수 있는 것<br>" +
+"How <b>many books</b> do you have?<br>" +
+"How <b>many apples</b> do you need?</span>" +
+"<span class='my'>확인법은 앞과 똑같아요. <b>바로 뒤 낱말에 -s가 있나?</b><br>" +
+"money → -s 없음 → <b>How much</b><br>" +
+"books → -s 있음 → <b>How many</b><br><br>" +
+"예찬이는 규칙을 알고 있어요. 문제를 풀 때 <b>뒤 낱말을 먼저 보는 순서</b>만 지키면 돼요!</span>";
+
+TIPS[C1] =
+"<b>a few</b>와 <b>a little</b>은 둘 다 '조금 있는'이지만 역시 쓰는 곳이 달라요." +
+"<span class='ex'><b>a few</b> + 셀 수 있는 것 (뒤에 <b>-s</b>)<br>" +
+"a few <b>potatoes</b> · a few <b>eggs</b> · a few <b>days</b> · a few <b>cookies</b></span>" +
+"<span class='ex'><b>a little</b> + 셀 수 없는 것 (-s 없음)<br>" +
+"a little <b>sugar</b> · a little <b>water</b> · a little <b>time</b> · a little <b>money</b></span>" +
+"many · much와 짝이 똑같아요!" +
+"<span class='ex'>셀 수 있는 것 → <b>many</b> (많은) · <b>a few</b> (조금)<br>" +
+"셀 수 없는 것 → <b>much</b> (많은) · <b>a little</b> (조금)</span>" +
+"<span class='my'>지난 학습지에서 <b>a little potatoes</b>라고 쓴 곳이 있었어요. potato<b>es</b>에 -s가 붙어 있으니 <b>a few</b>랍니다.<br>" +
+"그리고 <b>a little sugar</b>는 <b>정확하게</b> 골랐어요! 규칙을 알고 있다는 증거예요.<br>" +
+"확인 순서를 정해요: <b>뒤 낱말 보기 → -s 있으면 few, 없으면 little</b></span>";
+
+TIPS[C2] =
+"아주 중요한 것 하나! <b>a</b>가 있느냐 없느냐로 뜻이 <b>반대</b>가 돼요." +
+"<span class='ex'><b>a few</b> / <b>a little</b> = <b>조금 있는</b> (있다는 느낌)<br>" +
+"I have <b>a little</b> time. → 시간이 조금 있어.</span>" +
+"<span class='ex'><b>few</b> / <b>little</b> = <b>거의 없는</b> (없다는 느낌)<br>" +
+"I have <b>little</b> time. → 시간이 거의 없어.</span>" +
+"<span class='ex'>He has <b>few</b> photos. → 사진이 거의 없다<br>" +
+"He has <b>a few</b> photos. → 사진이 조금 있다</span>" +
+"<span class='my'>지난 학습지 12번 <b>I have ( ) time to have lunch.</b>(점심 먹을 시간이 거의 없다)에서<br>" +
+"few를 썼었죠? time은 -s가 없으니 <b>little</b>이었어요.<br>" +
+"그리고 70번 <b>He has few photos.</b>는 <b>정확하게</b> 골랐답니다!<br>" +
+"기억법: <b>a가 있으면 있는 것, a가 없으면 없는 것!</b></span>";
+
+TIPS[C3] =
+"이 단원의 네 낱말은 전부 <b>같은 방법</b>으로 판단해요. 뒤 낱말의 <b>-s</b>만 보면 끝이에요." +
+"<span class='ex'>뒤에 <b>-s 있음</b> → <b>many</b> · <b>a few</b> · <b>few</b><br>" +
+"뒤에 <b>-s 없음</b> → <b>much</b> · <b>a little</b> · <b>little</b></span>" +
+"<span class='ex'>연습해 봐요<br>" +
+"( ) eggs → egg<b>s</b>에 -s 있음 → <b>a few</b><br>" +
+"( ) sugar → -s 없음 → <b>a little</b><br>" +
+"( ) books → -s 있음 → <b>many</b><br>" +
+"( ) money → -s 없음 → <b>much</b></span>" +
+"<span class='my'>예찬이처럼 개념을 아는 친구에게 필요한 건 <b>보는 순서</b>예요.<br>" +
+"문제를 보면 괄호부터 보지 말고 <b>괄호 뒤 낱말</b>을 먼저 보세요.<br>" +
+"-s가 보이면 왼쪽(many · a few), 안 보이면 오른쪽(much · a little)!<br>" +
+"이 순서 하나로 이 단원 문제의 절반이 해결돼요.</span>";
+
+TIPS[D1] =
+"단위 낱말은 <b>모양</b>으로 정해져요. 그림을 떠올리면 안 헷갈려요." +
+"<span class='ex'><b>slice</b> — 칼로 <b>얇게 썬</b> 조각<br>" +
+"a slice of <b>pizza</b> · a slice of <b>cheese</b> · a slice of <b>ham</b> · a slice of <b>bread</b></span>" +
+"<span class='ex'><b>piece</b> — 떼어 낸 <b>한 덩이 · 한 조각</b> (가장 널리 쓰여요)<br>" +
+"a piece of <b>cake</b> · a piece of <b>paper</b> · a piece of <b>advice</b></span>" +
+"<span class='ex'><b>loaf</b> — 빵 <b>한 덩어리</b> 통째로<br>" +
+"a loaf of <b>bread</b> (여러 개면 <b>loaves</b>!)</span>" +
+"<span class='my'>지난 학습지 42번에서 <b>a slice of advice</b>라고 쓴 곳이 있었어요.<br>" +
+"충고는 칼로 썰 수 없죠? 눈에 보이지 않는 것은 <b>a piece of</b>를 써요.<br>" +
+"기억법: <b>칼로 썰 수 있으면 slice, 아니면 piece!</b></span>";
+
+TIPS[D2] =
+"담는 <b>그릇</b>으로 세는 것들이에요." +
+"<span class='ex'><b>cup</b> — 따뜻한 것을 담는 컵<br>" +
+"a cup of <b>coffee</b> · a cup of <b>tea</b></span>" +
+"<span class='ex'><b>glass</b> — 유리잔<br>" +
+"a glass of <b>water</b> · a glass of <b>milk</b> · a glass of <b>juice</b></span>" +
+"<span class='ex'><b>bottle</b> — 병<br>" +
+"a bottle of <b>water</b> · a bottle of <b>wine</b> · a bottle of <b>champagne</b></span>" +
+"<span class='ex'><b>bowl</b> — 우묵한 그릇<br>" +
+"a bowl of <b>soup</b> · a bowl of <b>rice</b> · a bowl of <b>cereal</b></span>" +
+"<span class='my'>여러 개일 때 -s 붙는 모양을 같이 봐 둬요.<br>" +
+"cup → <b>cups</b> / glass → <b>glasses</b> (-es!) / bottle → <b>bottles</b> / bowl → <b>bowls</b><br>" +
+"<b>glass</b>는 -s로 끝나서 <b>-es</b>를 붙여요. 여기가 자주 놓치는 곳이에요!<br>" +
+"예찬이가 <b>two bowls of soup</b>와 <b>four pairs of glasses</b>를 정확하게 썼어요. 잘하고 있어요!</span>";
+
+TIPS[D3] =
+"눈에 보이지 않는 것도 세고 싶을 때가 있어요. 그럴 땐 거의 다 <b>a piece of</b>예요." +
+"<span class='ex'>a piece of <b>advice</b> — 충고 한 마디<br>" +
+"a piece of <b>information</b> — 정보 하나<br>" +
+"a piece of <b>news</b> — 소식 하나</span>" +
+"그 밖에 알아 둘 단위도 있어요." +
+"<span class='ex'><b>spoonful</b> — 한 숟가락: a spoonful of <b>honey</b> · <b>salt</b> · <b>oil</b><br>" +
+"<b>sheet</b> — 종이 한 장: a sheet of <b>paper</b><br>" +
+"<b>bar</b> — 막대 모양: a bar of <b>soap</b> · <b>chocolate</b><br>" +
+"<b>can</b> — 캔: a can of <b>soda</b> · <b>tuna</b></span>" +
+"<span class='my'>지난 학습지에서 예찬이가 <b>a bar of soap</b>, <b>two spoonfuls of honey</b>, <b>two sheets of paper</b>를<br>" +
+"모두 정확하게 골랐어요! 단위 낱말은 이미 잘 알고 있답니다.<br>" +
+"이제 <b>advice는 piece</b> 하나만 더 챙기면 돼요.</span>";
+
+TIPS[E1] =
+"<b>두 짝이 하나로 된 것</b>은 언제나 <b>a pair of</b>로 세고, 뒤 낱말에는 <b>-s</b>가 붙어요." +
+"<span class='ex'>a pair of <b>pants</b> — 바지 한 벌<br>" +
+"a pair of <b>glasses</b> — 안경 하나<br>" +
+"a pair of <b>socks</b> — 양말 한 켤레<br>" +
+"a pair of <b>shoes</b> — 신발 한 켤레<br>" +
+"a pair of <b>scissors</b> — 가위 하나</span>" +
+"여기가 특별해요. <b>하나여도 뒤 낱말에 -s가 붙어요!</b>" +
+"<span class='ex'>a pair of <b>scissors</b> ⭕ (scissor ✗)<br>" +
+"가위는 날이 <b>두 짝</b>이라 언제나 -s예요.</span>" +
+"<span class='my'>지난 학습지 15번에서 <b>a pair of scissor</b>라고 쓴 곳이 있었어요. <b>-s 하나</b>만 더하면 완성이었답니다!<br>" +
+"기억법: <b>짝으로 된 건 언제나 -s!</b> 바지 · 안경 · 양말 · 신발 · 가위</span>";
+
+TIPS[E2] =
+"여러 짝일 때는 <b>pairs</b>로 바뀌어요. 그런데 뒤 낱말은 <b>그대로</b>예요." +
+"<span class='ex'>three <b>pairs</b> of <b>pants</b> — 바지 세 벌<br>" +
+"two <b>pairs</b> of <b>socks</b> — 양말 두 켤레<br>" +
+"two <b>pairs</b> of <b>shoes</b> — 신발 두 켤레<br>" +
+"four <b>pairs</b> of <b>glasses</b> — 안경 네 개</span>" +
+"이것도 앞에서 배운 것과 같아요. <b>-s는 단위(pairs)에</b> 붙고, 뒤 낱말은 원래 모양 그대로!" +
+"<span class='ex'>뒤 낱말에 이미 -s가 있는 건 <b>원래부터</b> 그런 거예요.<br>" +
+"pants · glasses · socks · shoes · scissors는 <b>항상</b> -s가 붙어 있어요.</span>" +
+"<span class='my'>예찬이가 <b>two pairs of socks</b>, <b>four pairs of glasses</b>, <b>three pairs of pants</b>를 정확하게 썼어요!<br>" +
+"이 부분은 아주 잘하고 있어요. 자신 있게 가면 돼요.</span>";
+
+TIPS[E3] =
+"받아쓰기에서 소리는 잘 들었는데 <b>철자에서 놓친</b> 낱말들이에요. 덩어리로 끊어서 외워요." +
+"<span class='ex'><b>beautiful</b> 아름다운 — be · au · ti · ful (<b>eau</b> 세 글자가 붙어요!)<br>" +
+"<b>volunteer</b> 자원봉사자 — vo · lun · <b>teer</b> (끝에 <b>e</b>가 두 개)<br>" +
+"<b>ingredients</b> 재료 — in · gre · di · ents</span>" +
+"<span class='ex'><b>filmed</b> 촬영했다 — film + ed (fl 아니고 <b>fi-lm</b>)<br>" +
+"<b>mentor</b> 멘토 — men · tor (motor 자동차 모터와 달라요!)<br>" +
+"<b>guidance</b> 지도, 안내 — gui · dance (안에 <b>dance</b>가 숨어 있어요)</span>" +
+"<span class='ex'><b>thousand</b> 천 — thou · sand (안에 <b>sand</b>가 있어요)<br>" +
+"<b>until</b> ~까지 — un · til (l은 하나!)</span>" +
+"<span class='my'>예찬이는 듣고 뜻을 파악하는 힘이 아주 좋아요. 받아쓰기 대부분을 정확하게 채웠어요!<br>" +
+"놓친 건 <b>철자 몇 글자</b>뿐이었어요. 그건 소리로는 알 수 없는 부분이라 눈으로 익혀야 해요.<br>" +
+"요령: 낱말 안에 숨은 <b>작은 낱말</b>을 찾으면 잘 외워져요.<br>" +
+"thou<b>sand</b>(모래) · gui<b>dance</b>(춤) · <b>in</b>gredients</span>";
+
+/* ══════════ 문제 30문항 (5영역 · 카드 1장당 2문항) ══════════ */
+var ALL = [
+/* ───────── 1영역 · -s 자리 잡기 (1~6) ───────── */
+{"src":A1,"q":"우리말에 맞게 <b>바르게</b> 쓴 것을 고르세요.<br><b>케이크 두 조각</b>","choices":["two pieces of cake","two piece of cake","two pieces of cakes","two piece of cakes"],"answer":"two pieces of cake","exp":"정답은 <b class='en'>two pieces of cake</b>!<br>· two니까 <b>단위(piece)</b>에 -s를 붙여 <b>pieces</b>. of 뒤의 cake는 그대로!<br>· <b>two piece of cake</b>는 단위에 -s가 빠졌어요.<br>· <b>two pieces of cakes</b>는 of 뒤에 -s를 붙였어요.<br>· <b>two piece of cakes</b>는 두 곳 모두 반대로 되어 있어요.<br>· 확인 순서: <b>앞에 s 있나? 뒤에 s 없나?</b> 두 번만 물어보면 끝이에요!"},
+{"src":A1,"q":"우리말에 맞게 <b>바르게</b> 쓴 것을 고르세요.<br><b>물 두 잔</b>","choices":["two glasses of water","two glass of water","two glasses of waters","two glass of waters"],"answer":"two glasses of water","exp":"정답은 <b class='en'>two glasses of water</b>!<br>· glass는 <b>-s로 끝나서 -es</b>를 붙여요 → <b>glasses</b>. water는 셀 수 없으니 그대로!<br>· <b>two glass of water</b>는 단위에 -es가 빠졌어요.<br>· <b>two glasses of waters</b>는 water에 -s를 붙였어요.<br>· <b>two glass of waters</b>는 두 곳 다 반대예요.<br>· 지난 학습지 31번이 이 유형이었어요. <b>glass는 -es</b>가 붙는다는 걸 꼭 챙겨요!"},
+{"src":A2,"q":"우리말에 맞게 <b>바르게</b> 쓴 것을 고르세요.<br><b>커피 세 잔</b>","choices":["three cups of coffee","three cup of coffee","three cups of coffees","three cup of coffees"],"answer":"three cups of coffee","exp":"정답은 <b class='en'>three cups of coffee</b>!<br>· 세는 것은 <b>잔(cups)</b>이에요. 커피는 셀 수 없어서 <b>coffee</b> 그대로!<br>· <b>three cups of coffees</b>는 of 뒤에 -s를 붙였어요. coffee는 셀 수 없어요.<br>· <b>three cup of coffee</b>는 단위에 -s가 빠졌어요.<br>· 지난 학습지 3번과 75번에 나왔던 표현이에요.<br>· 한 줄 정리: <b>of 뒤에는 -s가 없다!</b>"},
+{"src":A2,"q":"밑줄 친 부분을 바르게 고친 것은?<br><b class='en'>The men opened two bottles of <u>wines</u> last night.</b><span class='ko'>(그 남자들은 지난밤 와인 두 병을 열었다.)</span>","choices":["wine","wine's","a wine","wines'"],"answer":"wine","exp":"정답은 <b class='en'>wine</b>!<br>· 세는 것은 <b>병(bottles)</b>이에요. 와인은 액체라 셀 수 없으니 <b>wine</b> 그대로 써요.<br>· <b>wine's</b>와 <b>wines'</b>는 '~의'를 나타내는 다른 모양이에요.<br>· <b>a wine</b>은 정답이 아니에요 — 셀 수 없는 명사에 a를 붙이지 않고, 이미 앞에 two bottles가 있어요.<br>· 지난 학습지 13번이 이 문장이었어요. <b>bottles</b>는 정확했고 뒤의 -s만 떼면 완성이었답니다!"},
+{"src":A3,"q":"밑줄 친 부분을 바르게 고친 것은?<br><b class='en'>My mom put a spoonful of <u>salts</u> in the soup.</b><span class='ko'>(엄마가 수프에 소금 한 스푼을 넣었다.)</span>","choices":["salt","salties","a salt","saltes"],"answer":"salt","exp":"정답은 <b class='en'>salt</b>!<br>· 세는 것은 <b>숟가락(spoonful)</b>이에요. 소금은 알갱이라 셀 수 없으니 <b>salt</b> 그대로!<br>· <b>salties</b>와 <b>saltes</b>는 없는 말이에요.<br>· <b>a salt</b>는 정답이 아니에요 — 셀 수 없는 명사에 a를 붙이지 않아요.<br>· 지난 학습지 19번이 이 문장이었어요. <b>spoonful</b>은 정확했어요!<br>· 확인법: <b>of 뒤</b>를 보고 -s가 있으면 떼기."},
+{"src":A3,"q":"우리말에 맞게 <b>바르게</b> 쓴 것을 고르세요.<br><b>빵 두 덩이</b>","choices":["two loaves of bread","two loaf of bread","two loaves of breads","two loafs of bread"],"answer":"two loaves of bread","exp":"정답은 <b class='en'>two loaves of bread</b>!<br>· loaf의 복수형은 <b>loaves</b>예요. f를 <b>v</b>로 바꾸고 -es를 붙여요!<br>· <b>two loaf of bread</b>는 단위가 단수형이에요.<br>· <b>two loaves of breads</b>는 bread에 -s를 붙였어요. 빵은 셀 수 없어요.<br>· <b>two loafs of bread</b>는 f를 v로 바꾸지 않았어요.<br>· 지난 학습지 16번과 29번에 나왔어요. <b>loaf → loaves</b>는 knife → knives와 같은 규칙이에요!<br>· 1영역 끝! <b>앞에 s 있나? 뒤에 s 없나?</b>"},
+/* ───────── 2영역 · much / many (7~12) ───────── */
+{"src":B1,"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>I have ( ) books to read this week.</b><span class='ko'>(나는 이번 주에 읽을 책이 많다.)</span>","choices":["many","much","a little","little"],"answer":"many","exp":"정답은 <b>many</b>!<br>· 뒤 낱말 book<b>s</b>에 <b>-s</b>가 붙어 있죠? 셀 수 있으니 <b>many</b>예요.<br>· <b>much</b>는 셀 수 없는 것(homework · time · money) 앞에 써요.<br>· <b>a little</b>과 <b>little</b>도 셀 수 없는 것 앞에 써요.<br>· 예찬이가 지난 학습지 36번에서 이 문장을 만났어요. <b>books</b>는 정확했답니다!<br>· 판단법: <b>괄호 뒤 낱말을 먼저 보기</b> → -s 있으면 many!"},
+{"src":B1,"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>Teddy has too ( ) homework.</b><span class='ko'>(Teddy는 너무 많은 숙제를 가지고 있다.)</span>","choices":["much","many","a few","few"],"answer":"much","exp":"정답은 <b>much</b>!<br>· <b>homework</b>는 -s가 붙지 않는 낱말이에요. 셀 수 없으니 <b>much</b>!<br>· <b>many</b>는 정답이 아니에요 — homework<b>s</b>라는 말은 쓰지 않아요.<br>· <b>a few</b>와 <b>few</b>도 셀 수 있는 것 앞에 써요.<br>· 지난 학습지 11번과 23번에 나왔던 낱말이에요.<br>· 외워요: <b>숙제 · 시간 · 돈 · 일 · 정보</b> 다섯 개는 언제나 much!"},
+{"src":B2,"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>She didn't have ( ) time.</b><span class='ko'>(그녀는 많은 시간을 가지고 있지 않았다.)</span>","choices":["much","many","a few","few"],"answer":"much","exp":"정답은 <b>much</b>!<br>· <b>time</b>도 -s가 붙지 않는 낱말이에요. 그래서 <b>much</b>!<br>· <b>many</b>는 times처럼 -s가 붙을 때만 써요. (여기서는 '시간'이라 셀 수 없어요)<br>· 지난 학습지 38번이 이 문장이었어요. <b>didn't have</b>는 정확했답니다!<br>· 다섯 개 무리: homework · <b>time</b> · money · work · information"},
+{"src":B2,"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>I need ( ) apples to make jam.</b><span class='ko'>(나는 잼을 만들기 위해 많은 사과가 필요하다.)</span>","choices":["many","much","a little","little"],"answer":"many","exp":"정답은 <b>many</b>!<br>· apple<b>s</b>에 -s가 붙어 있으니 셀 수 있어요 → <b>many</b>!<br>· <b>much</b>는 -s가 없는 낱말 앞에 써요.<br>· <b>a little</b>과 <b>little</b>도 셀 수 없는 것 앞에 써요.<br>· 예찬이가 지난 학습지 14번에서 <b>many</b>를 정확하게 골랐어요! 잘했어요.<br>· 눈으로 -s만 확인하면 되는 문제예요."},
+{"src":B3,"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>How ( ) money do you have?</b><span class='ko'>(돈이 얼마나 있니?)</span>","choices":["much","many","a few","few"],"answer":"much","exp":"정답은 <b>much</b>!<br>· <b>money</b>는 -s가 붙지 않는 낱말이에요. 그래서 <b>How much</b>!<br>· <b>How many</b>는 뒤에 -s가 붙은 낱말이 올 때 써요. (How many books ~?)<br>· 지난 학습지 79번이 이 문장이었어요.<br>· 물어볼 때도 규칙은 똑같아요 — <b>바로 뒤 낱말에 -s가 있나?</b>"},
+{"src":B3,"q":"밑줄 친 부분의 쓰임이 <b>잘못된</b> 것을 고르세요.","choices":["many homework","a slice of pizza","a glass of orange juice","much time"],"answer":"many homework","exp":"정답(잘못된 것)은 <b class='en'>many homework</b>예요.<br>· homework는 -s가 붙지 않아 셀 수 없어요. 그래서 <b>much homework</b>가 맞아요.<br>· <b>a slice of pizza</b>는 맞아요 — 피자는 얇게 썰어 세요.<br>· <b>a glass of orange juice</b>는 맞아요 — 주스는 유리잔으로 세요.<br>· <b>much time</b>은 맞아요 — time도 셀 수 없어요.<br>· 지난 학습지 49번이 이 문제였어요.<br>· 2영역 끝! <b>-s 있으면 many, 없으면 much</b>"},
+/* ───────── 3영역 · a little / a few (13~18) ───────── */
+{"src":C1,"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>This smoothie needs ( ) sugar.</b><span class='ko'>(이 스무디는 설탕이 조금 필요하다.)</span>","choices":["a little","a few","many","few"],"answer":"a little","exp":"정답은 <b class='en'>a little</b>!<br>· <b>sugar</b>는 알갱이라 -s가 붙지 않아요. 셀 수 없으니 <b>a little</b>!<br>· <b>a few</b>는 -s가 붙은 낱말 앞에 써요.<br>· <b>many</b>도 셀 수 있는 것 앞에 쓰고, <b>few</b>는 '거의 없는'이라는 뜻이라 여기와 맞지 않아요.<br>· 예찬이가 지난 학습지 9번에서 <b>a little</b>을 정확하게 골랐어요! 잘했어요.<br>· 확인 순서: <b>괄호 뒤 낱말 → -s 있나?</b>"},
+{"src":C1,"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>She had ( ) potatoes this morning.</b><span class='ko'>(그녀는 오늘 아침에 감자를 조금 먹었다.)</span>","choices":["a few","a little","much","little"],"answer":"a few","exp":"정답은 <b class='en'>a few</b>!<br>· potato<b>es</b>에 <b>-s</b>가 붙어 있죠? 셀 수 있으니 <b>a few</b>예요.<br>· <b>a little</b>은 sugar · water처럼 -s가 없는 낱말 앞에 써요.<br>· <b>much</b>도 셀 수 없는 것 앞에 쓰고, <b>little</b>은 '거의 없는'이라는 뜻이에요.<br>· 지난 학습지 10번이 이 문장이었어요. potatoes의 <b>-es</b>를 보면 바로 알 수 있어요!<br>· 요령: 괄호보다 <b>괄호 뒤 낱말을 먼저</b> 보기."},
+{"src":C2,"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>There are ( ) eggs in the refrigerator.</b><span class='ko'>(냉장고에 달걀이 조금 있다.)</span>","choices":["a few","a little","much","little"],"answer":"a few","exp":"정답은 <b class='en'>a few</b>!<br>· egg<b>s</b>에 -s가 붙어 있으니 <b>a few</b>예요.<br>· 앞에 <b>There are</b>가 있는 것도 힌트예요! are는 여럿일 때 쓰거든요.<br>· <b>a little</b>과 <b>much</b>는 셀 수 없는 것 앞에 써요.<br>· 예찬이가 지난 학습지 30번에서 <b>a few</b>를 정확하게 골랐어요!<br>· 힌트가 두 개예요 — <b>are</b>와 <b>-s</b>. 하나만 봐도 답이 나와요."},
+{"src":C2,"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>We stayed ( ) days in Paris.</b><span class='ko'>(우리는 파리에서 며칠 머물렀다.)</span>","choices":["a few","a little","much","little"],"answer":"a few","exp":"정답은 <b class='en'>a few</b>!<br>· day<b>s</b>에 -s가 붙어 있으니 <b>a few</b>예요.<br>· <b>a little</b>은 -s가 없는 낱말(time · water · sugar) 앞에 써요.<br>· <b>little</b>은 '거의 없는'이라는 뜻이라 '며칠 머물렀다'와 맞지 않아요.<br>· 예찬이가 지난 학습지 72번에서 <b>a few</b>를 정확하게 골랐어요!<br>· 참고: <b>day</b>는 셀 수 있고 <b>time</b>(시간)은 셀 수 없어요. 비슷해 보이지만 달라요."},
+{"src":C3,"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>I have ( ) time to have lunch.</b><span class='ko'>(나는 점심 먹을 시간이 거의 없다.)</span>","choices":["little","few","many","a few"],"answer":"little","exp":"정답은 <b>little</b>!<br>· <b>time</b>은 -s가 붙지 않으니 <b>little</b> 쪽이에요.<br>· 그리고 '거의 <b>없다</b>'라는 뜻이니 <b>a</b>를 붙이지 않아요! a little이면 '조금 있다'가 돼요.<br>· <b>few</b>는 -s가 붙은 낱말 앞에 써요.<br>· 지난 학습지 12번이 이 문장이었어요.<br>· 두 단계로 생각해요 — ① 뒤 낱말에 -s 있나? (없음 → little 쪽) ② 있다는 뜻인가 없다는 뜻인가? (없음 → a를 빼기)"},
+{"src":C3,"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>He has ( ) photos on Instagram.</b><span class='ko'>(그는 인스타그램에 사진이 거의 없다.)</span>","choices":["few","little","much","a little"],"answer":"few","exp":"정답은 <b>few</b>!<br>· photo<b>s</b>에 -s가 붙어 있으니 <b>few</b> 쪽이에요.<br>· 그리고 '거의 <b>없다</b>'라는 뜻이니 <b>a</b>를 붙이지 않아요.<br>· <b>little</b>과 <b>much</b>는 -s가 없는 낱말 앞에 써요.<br>· 예찬이가 지난 학습지 70번에서 <b>few</b>를 정확하게 골랐어요! 잘했어요.<br>· 3영역 끝! <b>a가 있으면 있는 것, a가 없으면 없는 것</b>"},
+/* ───────── 4영역 · 단위 낱말 짝 (19~24) ───────── */
+{"src":D1,"q":"빈칸에 알맞은 단위를 고르세요.<br><b class='en'>I wanted a ( ) of advice from my mom.</b><span class='ko'>(나는 엄마에게 충고 한 마디를 원했다.)</span>","choices":["piece","slice","cup","bowl"],"answer":"piece","exp":"정답은 <b class='en'>piece</b>!<br>· <b>advice</b>(충고)는 눈에 보이지 않아요. 칼로 썰 수 없죠? 그래서 <b>a piece of</b>를 써요.<br>· <b>slice</b>는 칼로 얇게 썬 것에 써요. (a slice of pizza · cheese · ham)<br>· <b>cup</b>은 따뜻한 음료, <b>bowl</b>은 우묵한 그릇에 담는 것에 써요.<br>· 지난 학습지 42번이 이 문장이었어요.<br>· 기억법: <b>칼로 썰 수 있으면 slice, 아니면 piece!</b>"},
+{"src":D1,"q":"빈칸에 알맞은 단위를 고르세요.<br><b class='en'>He put three ( ) of ham in the pan.</b><span class='ko'>(그는 팬에 햄 세 조각을 넣었다.)</span>","choices":["slices","pieces","bowls","bottles"],"answer":"slices","exp":"정답은 <b class='en'>slices</b>!<br>· 햄은 칼로 <b>얇게 썰어</b> 놓죠? 그래서 <b>slice</b>예요. three니까 <b>slices</b>!<br>· <b>pieces</b>도 널리 쓰이지만, 얇게 썬 것에는 slice가 더 정확해요.<br>· <b>bowls</b>는 수프·밥, <b>bottles</b>는 병에 담긴 것에 써요.<br>· 예찬이가 지난 학습지 43번에서 <b>slices</b>를 정확하게 썼어요!<br>· slice로 세는 것: pizza · cheese · ham · bread"},
+{"src":D2,"q":"빈칸에 알맞은 단위를 고르세요.<br><b class='en'>She ate a ( ) of cereal for breakfast.</b><span class='ko'>(그녀는 아침으로 시리얼 한 그릇을 먹었다.)</span>","choices":["bowl","glass","sheet","bar"],"answer":"bowl","exp":"정답은 <b class='en'>bowl</b>!<br>· 시리얼은 <b>우묵한 그릇</b>에 담아 먹죠? 그래서 <b>a bowl of</b>예요.<br>· <b>glass</b>는 유리잔에 담는 음료(water · milk · juice)에 써요.<br>· <b>sheet</b>는 종이 한 장, <b>bar</b>는 비누·초콜릿처럼 막대 모양에 써요.<br>· 지난 학습지 25번과 46번에 나왔어요.<br>· bowl로 세는 것: <b>soup · rice · cereal</b>"},
+{"src":D2,"q":"빈칸에 알맞은 단위를 고르세요.<br><b class='en'>There is a ( ) of soap in the bathtub.</b><span class='ko'>(욕탕 안에 비누 한 개가 있다.)</span>","choices":["bar","bowl","sheet","cup"],"answer":"bar","exp":"정답은 <b class='en'>bar</b>!<br>· 비누는 <b>막대 모양 덩어리</b>죠? 그래서 <b>a bar of soap</b>예요.<br>· <b>bowl</b>은 우묵한 그릇, <b>sheet</b>는 종이 한 장, <b>cup</b>은 컵에 담는 것에 써요.<br>· 예찬이가 지난 학습지 45번에서 <b>a bar of soap</b>를 정확하게 골랐어요!<br>· bar로 세는 것: <b>soap · chocolate</b>"},
+{"src":D3,"q":"빈칸에 알맞은 단위를 고르세요.<br><b class='en'>The student asked for two ( ) of paper.</b><span class='ko'>(그 학생은 종이 두 장을 요청했다.)</span>","choices":["sheets","sheet","bowls","cans"],"answer":"sheets","exp":"정답은 <b class='en'>sheets</b>!<br>· 종이는 <b>한 장, 두 장</b>으로 세요. <b>a sheet of paper</b>! two니까 <b>sheets</b>예요.<br>· <b>sheet</b>는 단수형이라 two와 맞지 않아요.<br>· <b>bowls</b>는 그릇, <b>cans</b>는 캔에 담긴 것에 써요.<br>· 지난 학습지 44번이 이 문장이었어요. 단위 낱말은 정확했고 <b>-s</b>만 챙기면 됐답니다!<br>· 참고: 종이는 <b>a piece of paper</b>라고도 해요. 둘 다 맞아요."},
+{"src":D3,"q":"빈칸에 알맞은 단위를 고르세요.<br><b class='en'>Mother dropped two ( ) of honey into a glass of water.</b><span class='ko'>(어머니는 꿀 두 스푼을 물 한 컵에 떨어뜨렸다.)</span>","choices":["spoonfuls","spoonful","slices","loaves"],"answer":"spoonfuls","exp":"정답은 <b class='en'>spoonfuls</b>!<br>· 꿀은 <b>숟가락</b>으로 떠서 세요 → <b>a spoonful of honey</b>. two니까 <b>spoonfuls</b>!<br>· <b>spoonful</b>은 단수형이라 two와 맞지 않아요.<br>· <b>slices</b>는 얇게 썬 것, <b>loaves</b>는 빵 덩어리에 써요.<br>· 예찬이가 지난 학습지 25번에서 <b>two spoonfuls of honey</b>를 정확하게 썼어요!<br>· 4영역 끝! 단위는 <b>모양을 떠올리면</b> 바로 나와요."},
+/* ───────── 5영역 · a pair of + 자주 틀리는 철자 (25~30) ───────── */
+{"src":E1,"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>She gave me a pair of ( ).</b><span class='ko'>(그녀는 나에게 가위 하나를 주었다.)</span>","choices":["scissors","scissor","scissores","a scissor"],"answer":"scissors","exp":"정답은 <b class='en'>scissors</b>!<br>· 가위는 날이 <b>두 짝</b>이라 언제나 <b>-s</b>가 붙어 있어요. 하나여도 scissor<b>s</b>!<br>· <b>scissor</b>는 -s가 빠졌어요.<br>· <b>scissores</b>는 없는 모양이에요.<br>· <b>a scissor</b>는 정답이 아니에요 — 앞에 이미 a pair of가 있어요.<br>· 지난 학습지 15번이 이 문장이었어요. <b>a pair of</b>는 정확했답니다!<br>· 짝으로 된 것: pants · glasses · socks · shoes · <b>scissors</b> — 전부 -s!"},
+{"src":E1,"q":"우리말에 맞게 <b>바르게</b> 쓴 것을 고르세요.<br><b>안경 하나</b>","choices":["a pair of glasses","a pair of glass","a glasses","a pair of glassess"],"answer":"a pair of glasses","exp":"정답은 <b class='en'>a pair of glasses</b>!<br>· 안경은 알이 <b>두 짝</b>이라 <b>glasses</b>로 -s가 붙어요.<br>· <b>a pair of glass</b>는 -s가 빠졌어요. glass 하나면 '유리잔'이라는 다른 뜻이 돼요!<br>· <b>a glasses</b>는 a와 -s를 같이 쓸 수 없어요. a pair of가 필요해요.<br>· <b>glassess</b>는 s를 세 번 썼어요.<br>· 예찬이가 지난 학습지 27번에서 <b>a pair of glasses</b>를 정확하게 썼어요!"},
+{"src":E2,"q":"우리말에 맞게 <b>바르게</b> 쓴 것을 고르세요.<br><b>바지 세 벌</b>","choices":["three pairs of pants","three pair of pants","three pairs of pant","three pairs of pantses"],"answer":"three pairs of pants","exp":"정답은 <b class='en'>three pairs of pants</b>!<br>· three니까 단위 <b>pair</b>에 -s를 붙여 <b>pairs</b>. 그리고 pants는 <b>원래부터</b> -s가 붙어 있어요!<br>· <b>three pair of pants</b>는 단위에 -s가 빠졌어요.<br>· <b>three pairs of pant</b>는 pants의 -s를 떼어 버렸어요.<br>· <b>pantses</b>는 없는 모양이에요.<br>· 예찬이가 지난 학습지 34번과 39번에서 <b>pairs of pants</b>를 정확하게 썼어요! 아주 잘했어요."},
+{"src":E2,"q":"'아름다운'을 뜻하는 낱말의 <b>철자</b>로 알맞은 것을 고르세요.","choices":["beautiful","beutiful","beatiful","beautifull"],"answer":"beautiful","exp":"정답은 <b class='en'>beautiful</b>!<br>· <b>be · au · ti · ful</b> 네 덩어리로 끊어서 외워요. 앞부분에 <b>eau</b> 세 글자가 붙어 있어요!<br>· <b>beutiful</b>은 <b>a</b>가 빠졌어요. be-<b>au</b>-ti-ful!<br>· <b>beatiful</b>은 u가 빠졌어요.<br>· <b>beautifull</b>은 끝에 l을 두 번 썼어요. l은 하나예요.<br>· 받아쓰기 18번에 나왔던 낱말이에요. 소리는 정확하게 들었답니다!"},
+{"src":E3,"q":"'자원봉사자'를 뜻하는 낱말의 <b>철자</b>로 알맞은 것을 고르세요.","choices":["volunteer","volunter","voluntier","volenteer"],"answer":"volunteer","exp":"정답은 <b class='en'>volunteer</b>!<br>· <b>vo · lun · teer</b> 세 덩어리예요. 끝에 <b>e</b>가 <b>두 개</b>! (teer)<br>· <b>volunter</b>는 e가 하나 빠졌어요.<br>· <b>voluntier</b>는 끝이 -tier가 되었어요.<br>· <b>volenteer</b>는 가운데가 <b>lun</b>이에요.<br>· 받아쓰기 12번에 나왔던 낱말이에요.<br>· 기억법: <b>ee</b>로 끝나는 사람 — volunt<b>eer</b> · engin<b>eer</b>"},
+{"src":E3,"q":"'재료'를 뜻하는 낱말의 <b>철자</b>로 알맞은 것을 고르세요.","choices":["ingredients","engredients","ingredents","ingrediants"],"answer":"ingredients","exp":"정답은 <b class='en'>ingredients</b>!<br>· <b>in · gre · di · ents</b> 네 덩어리예요. 앞부분이 <b>in</b>이에요!<br>· <b>engredients</b>는 첫 부분이 en이 되었어요.<br>· <b>ingredents</b>는 <b>i</b>가 빠졌어요. gre-<b>di</b>-ents!<br>· <b>ingrediants</b>는 끝이 -iants가 되었어요. <b>ents</b>예요.<br>· 받아쓰기 14번에 나왔던 낱말이에요.<br>· 5영역 끝! 30문항 모두 수고했어요. 예찬이는 <b>알고 있는 걸 놓치지만 않으면</b> 돼요!"}
+];
+
+/* ══════════ 오답 클리닉 문제 (문항별 1:1 대응) ══════════ */
+var CLINIC = [
+{"q":"우리말에 맞게 <b>바르게</b> 쓴 것을 고르세요.<br><b>피자 두 조각</b>","choices":["two slices of pizza","two slice of pizza","two slices of pizzas","two slice of pizzas"],"answer":"two slices of pizza","exp":"정답은 <b class='en'>two slices of pizza</b>!<br>· 앞의 단위(slice)에 -s → <b>slices</b>. of 뒤의 pizza는 그대로!<br>· 확인 순서: <b>앞에 s 있나? 뒤에 s 없나?</b>"},
+{"q":"우리말에 맞게 <b>바르게</b> 쓴 것을 고르세요.<br><b>우유 세 잔</b>","choices":["three glasses of milk","three glass of milk","three glasses of milks","three glass of milks"],"answer":"three glasses of milk","exp":"정답은 <b class='en'>three glasses of milk</b>!<br>· glass는 -s로 끝나서 <b>-es</b>를 붙여요 → glasses.<br>· milk는 셀 수 없으니 그대로! 지난 학습지 37번 유형이에요."},
+{"q":"밑줄 친 부분을 바르게 고친 것은?<br><b class='en'>I ordered two glasses of sparkling <u>waters</u>.</b><span class='ko'>(나는 스파클링 워터 두 잔을 주문했다.)</span>","choices":["water","a water","waters'","water's"],"answer":"water","exp":"정답은 <b class='en'>water</b>!<br>· 세는 것은 <b>잔(glasses)</b>이에요. 물은 셀 수 없으니 <b>water</b> 그대로!<br>· 지난 학습지 31번이 이 문장이었어요."},
+{"q":"밑줄 친 부분을 바르게 고친 것은?<br><b class='en'>I ate two pieces of <u>cakes</u>.</b><span class='ko'>(나는 케이크 두 조각을 먹었다.)</span>","choices":["cake","a cake","cakees","cake's"],"answer":"cake","exp":"정답은 <b class='en'>cake</b>!<br>· of 뒤에는 -s를 붙이지 않아요. 세는 건 <b>조각(pieces)</b>이에요.<br>· 지난 학습지 32번이 이 문장이었어요. <b>pieces</b>는 정확했답니다!"},
+{"q":"밑줄 친 부분을 바르게 고친 것은?<br><b class='en'>My mom brought home two <u>loaf</u> of bread.</b><span class='ko'>(엄마가 빵 두 덩이를 집에 가져왔다.)</span>","choices":["loaves","loafs","loafes","loave"],"answer":"loaves","exp":"정답은 <b class='en'>loaves</b>!<br>· loaf는 f를 <b>v</b>로 바꾸고 -es → <b>loaves</b>. knife → knives와 같은 규칙이에요.<br>· loafs는 f를 v로 바꾸지 않았어요."},
+{"q":"우리말에 맞게 <b>바르게</b> 쓴 것을 고르세요.<br><b>치즈 네 조각</b>","choices":["four slices of cheese","four slice of cheese","four slices of cheeses","four slice of cheeses"],"answer":"four slices of cheese","exp":"정답은 <b class='en'>four slices of cheese</b>!<br>· 치즈는 얇게 썰어 세니 <b>slice</b>. four니까 <b>slices</b>!<br>· cheese는 셀 수 없으니 그대로예요. 지난 학습지 71번 유형이에요."},
+{"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>He has ( ) friends at school.</b><span class='ko'>(그는 학교에 친구가 많다.)</span>","choices":["many","much","a little","little"],"answer":"many","exp":"정답은 <b>many</b>! friend<b>s</b>에 -s가 붙어 있어요.<br>· much는 -s가 없는 낱말 앞에 써요.<br>· 괄호 뒤 낱말을 먼저 보는 습관!"},
+{"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>She has too ( ) work today.</b><span class='ko'>(그녀는 오늘 일이 너무 많다.)</span>","choices":["much","many","a few","few"],"answer":"much","exp":"정답은 <b>much</b>! <b>work</b>는 -s가 붙지 않는 낱말이에요.<br>· 다섯 개 무리: homework · time · money · <b>work</b> · information<br>· 지난 학습지 17번에 나왔어요."},
+{"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>She gets too ( ) money.</b><span class='ko'>(그녀는 돈을 너무 많이 받는다.)</span>","choices":["much","many","a few","few"],"answer":"much","exp":"정답은 <b>much</b>! <b>money</b>도 -s가 붙지 않아요.<br>· many money라고 쓰지 않아요. 지난 학습지 17번에 나왔던 부분이에요."},
+{"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>I have ( ) photos on my phone.</b><span class='ko'>(내 폰에 사진이 많다.)</span>","choices":["many","much","a little","little"],"answer":"many","exp":"정답은 <b>many</b>! photo<b>s</b>에 -s가 붙어 있어요.<br>· much는 셀 수 없는 것 앞에 써요. 눈으로 -s만 확인하면 끝!"},
+{"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>How ( ) books do you have?</b><span class='ko'>(책이 몇 권 있니?)</span>","choices":["many","much","a little","little"],"answer":"many","exp":"정답은 <b>many</b>! book<b>s</b>에 -s가 붙어 있으니 <b>How many</b>예요.<br>· How much는 money · time처럼 -s가 없는 낱말 앞에 써요."},
+{"q":"밑줄 친 부분의 쓰임이 <b>잘못된</b> 것을 고르세요.","choices":["many money","much homework","a piece of advice","two bottles of wine"],"answer":"many money","exp":"정답(잘못된 것)은 <b class='en'>many money</b>예요.<br>· money는 -s가 붙지 않아 셀 수 없어요 → <b>much money</b>.<br>· 나머지는 모두 바르게 쓰였어요."},
+{"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>I want ( ) sugar in the drink.</b><span class='ko'>(나는 음료에 설탕을 조금 원한다.)</span>","choices":["a little","a few","many","few"],"answer":"a little","exp":"정답은 <b class='en'>a little</b>! sugar는 -s가 붙지 않아요.<br>· a few는 -s가 붙은 낱말 앞에 써요. 지난 학습지 52번 유형이에요."},
+{"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>I bought ( ) eggs at the market.</b><span class='ko'>(나는 시장에서 달걀을 조금 샀다.)</span>","choices":["a few","a little","much","little"],"answer":"a few","exp":"정답은 <b class='en'>a few</b>! egg<b>s</b>에 -s가 붙어 있어요.<br>· 지난 학습지 22번이 이 문장이었어요. 괄호 뒤 낱말을 먼저 보기!"},
+{"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>There are ( ) cookies on the table.</b><span class='ko'>(탁자 위에 쿠키가 조금 있다.)</span>","choices":["a few","a little","much","little"],"answer":"a few","exp":"정답은 <b class='en'>a few</b>! cookie<b>s</b>에 -s가 붙어 있고, 앞에 <b>There are</b>도 힌트예요.<br>· 지난 학습지 51번에 나왔던 부분이에요."},
+{"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>Put ( ) salt in the soup.</b><span class='ko'>(수프에 소금을 조금 넣어라.)</span>","choices":["a little","a few","many","few"],"answer":"a little","exp":"정답은 <b class='en'>a little</b>! salt는 알갱이라 -s가 붙지 않아요.<br>· a few는 셀 수 있는 것 앞에 써요."},
+{"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>The workers have ( ) time to rest.</b><span class='ko'>(그 일꾼들은 쉴 시간이 거의 없다.)</span>","choices":["little","few","many","a few"],"answer":"little","exp":"정답은 <b>little</b>!<br>· time은 -s가 없으니 little 쪽이고, '거의 <b>없다</b>'라는 뜻이라 <b>a</b>를 빼요.<br>· a little이면 '조금 있다'가 돼요. 뜻이 반대예요!"},
+{"q":"빈칸에 알맞은 말을 고르세요.<br><b class='en'>The US had very ( ) rain last year.</b><span class='ko'>(작년에 미국에는 비가 거의 오지 않았다.)</span>","choices":["little","few","many","a few"],"answer":"little","exp":"정답은 <b>little</b>!<br>· <b>rain</b>은 -s가 붙지 않아요. 그리고 '거의 없다'라는 뜻이라 a를 빼요.<br>· 지난 학습지 52번에 나왔던 문장이에요."},
+{"q":"빈칸에 알맞은 단위를 고르세요.<br><b class='en'>She gave me a ( ) of information.</b><span class='ko'>(그녀는 나에게 정보 하나를 주었다.)</span>","choices":["piece","slice","bowl","bar"],"answer":"piece","exp":"정답은 <b class='en'>piece</b>!<br>· information은 눈에 보이지 않아요. 보이지 않는 것은 <b>a piece of</b>!<br>· advice · information · news 모두 piece로 세요."},
+{"q":"빈칸에 알맞은 단위를 고르세요.<br><b class='en'>I ate two ( ) of bread for breakfast.</b><span class='ko'>(나는 아침으로 빵 두 조각을 먹었다.)</span>","choices":["slices","bowls","cups","bars"],"answer":"slices","exp":"정답은 <b class='en'>slices</b>!<br>· 식빵은 얇게 썰어 먹죠? <b>slice</b>예요. two니까 slices!<br>· 통째로 한 덩어리면 <b>a loaf of bread</b>랍니다."},
+{"q":"빈칸에 알맞은 단위를 고르세요.<br><b class='en'>He ate a ( ) of rice for lunch.</b><span class='ko'>(그는 점심으로 밥 한 그릇을 먹었다.)</span>","choices":["bowl","glass","sheet","slice"],"answer":"bowl","exp":"정답은 <b class='en'>bowl</b>!<br>· 밥은 우묵한 그릇에 담아 먹죠? <b>a bowl of rice</b>!<br>· bowl로 세는 것: soup · rice · cereal"},
+{"q":"빈칸에 알맞은 단위를 고르세요.<br><b class='en'>He drank a ( ) of soda.</b><span class='ko'>(그는 탄산음료 한 캔을 마셨다.)</span>","choices":["can","bar","sheet","loaf"],"answer":"can","exp":"정답은 <b class='en'>can</b>!<br>· 캔에 담긴 것은 <b>a can of</b>예요. (soda · tuna)<br>· bar는 비누·초콜릿, sheet는 종이, loaf는 빵 덩어리에 써요."},
+{"q":"빈칸에 알맞은 단위를 고르세요.<br><b class='en'>I need two ( ) of paper and a pen.</b><span class='ko'>(나는 종이 두 장과 펜 하나가 필요하다.)</span>","choices":["sheets","sheet","bowls","bars"],"answer":"sheets","exp":"정답은 <b class='en'>sheets</b>!<br>· 종이는 <b>sheet</b>로 세고, two니까 <b>sheets</b>!<br>· 지난 학습지 73번이 이 문장이었어요. <b>a piece of paper</b>도 맞아요."},
+{"q":"빈칸에 알맞은 단위를 고르세요.<br><b class='en'>He put two ( ) of oil in the pan.</b><span class='ko'>(그는 팬에 기름 두 스푼을 넣었다.)</span>","choices":["spoonfuls","spoonful","slices","sheets"],"answer":"spoonfuls","exp":"정답은 <b class='en'>spoonfuls</b>!<br>· 기름은 숟가락으로 떠서 세요 → <b>spoonful</b>. two니까 spoonfuls!<br>· 지난 학습지 43번에 나왔어요."},
+{"q":"우리말에 맞게 <b>바르게</b> 쓴 것을 고르세요.<br><b>양말 두 켤레</b>","choices":["two pairs of socks","two pair of socks","two pairs of sock","two pairs of sockses"],"answer":"two pairs of socks","exp":"정답은 <b class='en'>two pairs of socks</b>!<br>· two니까 <b>pairs</b>, 그리고 socks는 원래부터 -s가 붙어 있어요.<br>· 예찬이가 지난 학습지 28번에서 정확하게 썼어요!"},
+{"q":"우리말에 맞게 <b>바르게</b> 쓴 것을 고르세요.<br><b>신발 두 켤레</b>","choices":["two pairs of shoes","two pair of shoes","two pairs of shoe","two shoes"],"answer":"two pairs of shoes","exp":"정답은 <b class='en'>two pairs of shoes</b>!<br>· 신발도 두 짝이라 <b>shoes</b>로 -s가 붙어요. two니까 <b>pairs</b>!<br>· 지난 학습지 39번에 나왔어요."},
+{"q":"우리말에 맞게 <b>바르게</b> 쓴 것을 고르세요.<br><b>바지 한 벌</b>","choices":["a pair of pants","a pair of pant","a pants","a pair pants"],"answer":"a pair of pants","exp":"정답은 <b class='en'>a pair of pants</b>!<br>· 바지는 다리가 두 짝이라 언제나 <b>pants</b>로 -s가 붙어요.<br>· <b>of</b>도 빠뜨리지 않아요. 지난 학습지 76번에 나왔어요."},
+{"q":"'천(1000)'을 뜻하는 낱말의 <b>철자</b>로 알맞은 것을 고르세요.","choices":["thousand","thousend","thowsand","thousant"],"answer":"thousand","exp":"정답은 <b class='en'>thousand</b>!<br>· 안에 <b>sand</b>(모래)가 숨어 있어요! thou + <b>sand</b><br>· 받아쓰기 18번에 나왔던 낱말이에요."},
+{"q":"'촬영했다'를 뜻하는 낱말의 <b>철자</b>로 알맞은 것을 고르세요.","choices":["filmed","flimed","filmd","fillmed"],"answer":"filmed","exp":"정답은 <b class='en'>filmed</b>!<br>· <b>film</b>(영화, 촬영하다) + <b>ed</b>예요. f-i-l-m 순서!<br>· flimed는 i와 l의 순서가 바뀌었어요. 받아쓰기 7번에 나왔어요."},
+{"q":"'지도, 안내'를 뜻하는 낱말의 <b>철자</b>로 알맞은 것을 고르세요.","choices":["guidance","guidence","gidance","guaidance"],"answer":"guidance","exp":"정답은 <b class='en'>guidance</b>!<br>· 안에 <b>dance</b>(춤)가 숨어 있어요! gui + <b>dance</b><br>· guidence는 끝이 -ence가 되었어요. 받아쓰기 12번에 나왔어요."}
+];
+
+/* ══════════ 정답 영어 읽어 주기 — 문항별 읽을 문장 ══════════ */
+/* '잘못된 것 고르기' 문항은 바르게 고친 문장을 읽어 준다. */
+var SAY_ALL = [
+"two pieces of cake",
+"two glasses of water",
+"three cups of coffee",
+"The men opened two bottles of wine last night.",
+"My mom put a spoonful of salt in the soup.",
+"two loaves of bread",
+"I have many books to read this week.",
+"Teddy has too much homework.",
+"She didn't have much time.",
+"I need many apples to make jam.",
+"How much money do you have?",
+"much homework",
+"This smoothie needs a little sugar.",
+"She had a few potatoes this morning.",
+"There are a few eggs in the refrigerator.",
+"We stayed a few days in Paris.",
+"I have little time to have lunch.",
+"He has few photos on Instagram.",
+"I wanted a piece of advice from my mom.",
+"He put three slices of ham in the pan.",
+"She ate a bowl of cereal for breakfast.",
+"There is a bar of soap in the bathtub.",
+"The student asked for two sheets of paper.",
+"Mother dropped two spoonfuls of honey into a glass of water.",
+"She gave me a pair of scissors.",
+"a pair of glasses",
+"three pairs of pants",
+"beautiful, beautiful.",
+"volunteer, volunteer.",
+"ingredients, ingredients."
+];
+var SAY_CLINIC = [
+"two slices of pizza",
+"three glasses of milk",
+"I ordered two glasses of sparkling water.",
+"I ate two pieces of cake.",
+"My mom brought home two loaves of bread.",
+"four slices of cheese",
+"He has many friends at school.",
+"She has too much work today.",
+"She gets too much money.",
+"I have many photos on my phone.",
+"How many books do you have?",
+"much money",
+"I want a little sugar in the drink.",
+"I bought a few eggs at the market.",
+"There are a few cookies on the table.",
+"Put a little salt in the soup.",
+"The workers have little time to rest.",
+"The US had very little rain last year.",
+"She gave me a piece of information.",
+"I ate two slices of bread for breakfast.",
+"He ate a bowl of rice for lunch.",
+"He drank a can of soda.",
+"I need two sheets of paper and a pen.",
+"He put two spoonfuls of oil in the pan.",
+"two pairs of socks",
+"two pairs of shoes",
+"a pair of pants",
+"thousand, thousand.",
+"filmed, filmed.",
+"guidance, guidance."
+];
+(function attachSay() {
+  ALL.forEach(function (q, i) { q.say = SAY_ALL[i] || ""; });
+  CLINIC.forEach(function (q, i) { q.say = SAY_CLINIC[i] || ""; });
+})();
+
+/* ══════════ 영역 · 카드 배치 ══════════ */
+var SECTIONS = [
+  { name: "1영역 · -s 자리 잡기",              start: 0,  end: 6,  cards: [A1, A2, A3] },
+  { name: "2영역 · much / many",              start: 6,  end: 12, cards: [B1, B2, B3] },
+  { name: "3영역 · a little / a few",         start: 12, end: 18, cards: [C1, C2, C3] },
+  { name: "4영역 · 단위 낱말 짝 맞추기",        start: 18, end: 24, cards: [D1, D2, D3] },
+  { name: "5영역 · a pair of + 자주 틀리는 철자", start: 24, end: 30, cards: [E1, E2, E3] }
+];
+var NSEC = SECTIONS.length;
+function secIndex(i) {
+  for (var s = 0; s < NSEC; s++) { if (i < SECTIONS[s].end) return s; }
+  return NSEC - 1;
+}
+var CARD_AT = {
+  0: A1, 2: A2, 4: A3,
+  6: B1, 8: B2, 10: B3,
+  12: C1, 14: C2, 16: C3,
+  18: D1, 20: D2, 22: D3,
+  24: E1, 26: E2, 28: E3
+};
+
+/* ══════════ 정답 위치 균등 분산 (같은 위치 3연속 금지) ══════════ */
+function shuffleArr(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function balancedAssign(n, k) {
+  var pool = [];
+  var base = Math.floor(n / k);
+  for (var p = 0; p < k; p++) { for (var c = 0; c < base; c++) pool.push(p); }
+  var remainder = n - pool.length;
+  var extra = shuffleArr([0, 1, 2, 3]).slice(0, remainder);
+  extra.forEach(function (p) { pool.push(p); });
+  return shuffleArr(pool);
+}
+function hasTripleRun(arr) {
+  for (var i = 2; i < arr.length; i++) {
+    if (arr[i] === arr[i - 1] && arr[i - 1] === arr[i - 2]) return true;
+  }
+  return false;
+}
+function balancedNoTriple(n, k) {
+  var t = balancedAssign(n, k);
+  for (var tries = 0; tries < 300 && hasTripleRun(t); tries++) t = balancedAssign(n, k);
+  return t;
+}
+function prepareList(list, from, to) {
+  var mcIdx = [];
+  for (var idx = from; idx < to; idx++) {
+    var q = list[idx];
+    if (q.t === "ord") {
+      var ti = [];
+      for (var z = 0; z < q.tiles.length; z++) ti.push(z);
+      q.shuffled = shuffleArr(ti);
+    } else { mcIdx.push(idx); }
+  }
+  var targets = balancedNoTriple(mcIdx.length, 4);
+  mcIdx.forEach(function (idx, mi) {
+    var q = list[idx];
+    var sh = shuffleArr(q.choices);
+    var cur = sh.indexOf(q.answer);
+    var tg = targets[mi];
+    var tmp = sh[tg]; sh[tg] = sh[cur]; sh[cur] = tmp;
+    q.shuffled = sh;
+  });
+}
+(function prepareAll() {
+  SECTIONS.forEach(function (sec) {
+    prepareList(ALL, sec.start, sec.end);
+    prepareList(CLINIC, sec.start, sec.end);
+  });
+})();
+
+/* ══════════ 정답 영어 소리로 듣기 ══════════ */
+var SOUND_KEY = "engfit-sound-on";
+var soundOn = true;
+try { soundOn = localStorage.getItem(SOUND_KEY) !== "off"; } catch (e) {}
+
+var EN_VOICE = null;
+function pickVoice() {
+  try {
+    var vs = window.speechSynthesis.getVoices() || [];
+    var en = vs.filter(function (v) { return /^en/i.test(v.lang || ""); });
+    EN_VOICE = en.filter(function (v) { return /en[-_]US/i.test(v.lang || ""); })[0] || en[0] || null;
+  } catch (e) {}
+}
+if (window.speechSynthesis) {
+  pickVoice();
+  try { window.speechSynthesis.onvoiceschanged = pickVoice; } catch (e) {}
+}
+
+/* iOS 등에서 첫 소리가 나오도록, 시작 버튼을 누를 때 미리 한 번 깨워 둔다 */
+var _voiceWarmed = false;
+function warmUpVoice() {
+  if (_voiceWarmed || !window.speechSynthesis) return;
+  _voiceWarmed = true;
+  try {
+    var u = new SpeechSynthesisUtterance(" ");
+    u.volume = 0; u.lang = "en-US";
+    window.speechSynthesis.speak(u);
+  } catch (e) {}
+}
+
+function showSayBar(text) {
+  var t = document.getElementById("saytext");
+  if (t) t.textContent = text;
+  var bar = document.getElementById("saybar");
+  if (bar) bar.classList.remove("hidden");
+}
+function hideSayBar() {
+  var bar = document.getElementById("saybar");
+  if (bar) bar.classList.add("hidden");
+}
+function stopSpeaking() {
+  try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+  hideSayBar();
+}
+
+/* 정답 영어를 읽어 준 뒤 onDone 실행.
+   소리가 꺼져 있거나 브라우저가 지원하지 않으면 기다리지 않고 바로 넘어간다. */
+function speakAnswer(text, onDone) {
+  var done = false;
+  function finish() {
+    if (done) return;
+    done = true;
+    hideSayBar();
+    onDone();
+  }
+  if (!soundOn || !text || !window.speechSynthesis) { setTimeout(finish, 250); return; }
+  showSayBar(text);
+  try {
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US";
+    if (EN_VOICE) u.voice = EN_VOICE;
+    u.rate = 0.82;
+    u.pitch = 1;
+    u.onend = function () { setTimeout(finish, 400); };
+    u.onerror = finish;
+    window.speechSynthesis.speak(u);
+    /* 소리가 끝나지 않는 환경에서도 멈추지 않도록 하는 안전장치 */
+    setTimeout(finish, Math.min(11000, 2400 + text.length * 95));
+  } catch (e) { setTimeout(finish, 700); }
+}
+
+/* ══════════ 정답 음원 재생 (카톡 인앱 브라우저에서도 나오도록 파일 재생) ══════════ */
+function pad2(n) { return (n < 10 ? "0" : "") + n; }
+
+var AUDIO_EL = null;
+function getAudioEl() {
+  if (!AUDIO_EL) {
+    AUDIO_EL = new Audio();
+    AUDIO_EL.preload = "auto";
+  }
+  return AUDIO_EL;
+}
+function stopAudio() {
+  try { if (AUDIO_EL) { AUDIO_EL.pause(); AUDIO_EL.onended = null; AUDIO_EL.onerror = null; AUDIO_EL.onplaying = null; } } catch (e) {}
+}
+
+/* 정답 음원을 들려준 뒤 onDone 실행.
+   1순위 음원 파일 → 2순위 브라우저 읽기(TTS) → 3순위 그냥 넘어가기 */
+function playAnswer(file, text, onDone) {
+  var done = false;
+  function finish() {
+    if (done) return;
+    done = true;
+    stopAudio();
+    hideSayBar();
+    onDone();
+  }
+  if (!soundOn || !text) { setTimeout(finish, 250); return; }
+  showSayBar(text);
+
+  var usedFallback = false;
+  function fallback() {
+    if (done || usedFallback) return;
+    usedFallback = true;
+    stopAudio();
+    speakAnswer(text, finish);
+  }
+
+  var a = getAudioEl();
+  var startGuard = setTimeout(fallback, 2600);
+  try {
+    a.onplaying = function () { clearTimeout(startGuard); };
+    a.onended = function () { clearTimeout(startGuard); setTimeout(finish, 350); };
+    a.onerror = function () { clearTimeout(startGuard); fallback(); };
+    a.src = "audio/" + file + ".wav?v=1";
+    a.currentTime = 0;
+    var p = a.play();
+    if (p && p.catch) { p.catch(function () { clearTimeout(startGuard); fallback(); }); }
+  } catch (e) { clearTimeout(startGuard); fallback(); }
+
+  /* 어떤 경우에도 화면이 멈추지 않게 하는 최종 안전장치 */
+  setTimeout(finish, Math.min(13000, 4000 + text.length * 95));
+}
+
+/* ══════════ 진행 상태 ══════════ */
+var studentName = "";
+var current = 0;
+var answersLog = new Array(ALL.length).fill(null);
+var elapsed = new Array(NSEC).fill(0);
+var sent = new Array(NSEC).fill(false);
+var clinicSent = new Array(NSEC).fill(false);
+var lastTick = 0;
+var curSec = 0;
+var cardsShown = {};
+var pendingCard = 0;
+var MODE = "quiz";
+
+var clinicList = [];
+var clinicPos = 0;
+var clinicLog = [];
+var clinicSec = 0;
+
+var SAVE_KEY = "kimyechan-basic-20260907";
+function saveState() {
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      v: 1, name: studentName, current: current, log: answersLog,
+      elapsed: elapsed, sent: sent, clinicSent: clinicSent, cards: cardsShown,
+      choices: ALL.map(function (q) { return q.shuffled || null; })
+    }));
+  } catch (e) {}
+}
+function loadState() {
+  try {
+    var s = JSON.parse(localStorage.getItem(SAVE_KEY));
+    return (s && s.v === 1 && s.name && s.log) ? s : null;
+  } catch (e) { return null; }
+}
+function clearState() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} }
+
+var ALL_CARDS = ["start-card", "resume-card", "cards-card", "quiz-card", "sec-result-card",
+                 "clinic-why-card", "clinic-card", "clinic-result-card"];
+function show(id) {
+  stopSpeaking();
+  stopAudio();
+  ALL_CARDS.forEach(function (c) {
+    document.getElementById(c).classList.toggle("hidden", c !== id);
+  });
+  if (id === "start-card") refreshSectionButtons();
+  window.scrollTo(0, 0);
+}
+
+function secDone(si) {
+  var s = SECTIONS[si];
+  for (var i = s.start; i < s.end; i++) { if (!answersLog[i]) return false; }
+  return true;
+}
+function firstUndoneSec() {
+  for (var i = 0; i < NSEC; i++) { if (!secDone(i)) return i; }
+  return -1;
+}
+function refreshSectionButtons() {
+  var doneList = [];
+  secBtns.forEach(function (btn, si) {
+    var done = secDone(si);
+    btn.classList.toggle("done", done);
+    if (done) doneList.push(si + 1);
+  });
+  var note = document.getElementById("sec-done-note");
+  if (note) {
+    note.textContent = doneList.length
+      ? "다 푼 영역: " + doneList.join("영역, ") + "영역 (다시 눌러 복습할 수 있어요)"
+      : "";
+  }
+}
+
+/* ══════════ 카드 → 문제 2개 ══════════ */
+function step() {
+  var si = secIndex(current);
+  curSec = si;
+  if (CARD_AT[current] && !cardsShown[current]) { showCardScreen(current); }
+  else { MODE = "quiz"; show("quiz-card"); showQuestion(); }
+}
+function showCardScreen(i) {
+  pendingCard = i;
+  var sec = SECTIONS[curSec];
+  var title = CARD_AT[i];
+  var pos = sec.cards.indexOf(title) + 1;
+  document.getElementById("card-num").textContent = "개념 카드 " + pos + " / " + sec.cards.length;
+  document.getElementById("card-sec").textContent = sec.name.split(" · ")[0];
+  document.getElementById("card-bar").style.width = (pos / sec.cards.length * 100) + "%";
+  document.getElementById("cardbox").innerHTML = "<h2>" + title + "</h2>" + (TIPS[title] || "");
+  show("cards-card");
+}
+function afterCard() {
+  cardsShown[pendingCard] = true;
+  saveState();
+  MODE = "quiz";
+  show("quiz-card");
+  showQuestion();
+}
+document.getElementById("card-next").addEventListener("click", afterCard);
+document.getElementById("card-skip").addEventListener("click", afterCard);
+
+/* ══════════ 시작 / 이어하기 ══════════ */
+var nameInput = document.getElementById("name-input");
+var secBtns = [].slice.call(document.querySelectorAll(".sec-start"));
+var soundBox = document.getElementById("sound-on");
+if (soundBox) {
+  soundBox.checked = soundOn;
+  soundBox.addEventListener("change", function () {
+    soundOn = soundBox.checked;
+    try { localStorage.setItem(SOUND_KEY, soundOn ? "on" : "off"); } catch (e) {}
+    if (!soundOn) stopSpeaking();
+  });
+}
+var testBtn = document.getElementById("sound-test");
+var soundMsg = document.getElementById("sound-msg");
+function setMsg(txt, color) {
+  if (!soundMsg) return;
+  soundMsg.textContent = txt;
+  soundMsg.style.color = color;
+}
+if (testBtn) {
+  testBtn.addEventListener("click", function () {
+    warmUpVoice();
+    setMsg("소리를 내는 중이에요...", "#6B7B7E");
+    var a = getAudioEl();
+    var started = false;
+    a.onplaying = function () {
+      started = true;
+      setMsg("소리가 나오고 있어요! 안 들리면 휴대폰 볼륨을 올려 주세요.", "#2F7C83");
+    };
+    a.onended = function () {
+      if (started) setMsg("소리 확인 완료! 이제 시작해도 좋아요.", "#2F7C83");
+    };
+    a.onerror = function () {
+      setMsg("소리 파일을 못 불러왔어요. 아래 안내대로 다른 브라우저로 열어 주세요.", "#b5762f");
+    };
+    try {
+      a.src = "audio/test.wav?v=1";
+      a.currentTime = 0;
+      var p = a.play();
+      if (p && p.catch) {
+        p.catch(function () {
+          setMsg("브라우저가 소리를 막았어요. 아래 안내대로 다른 브라우저로 열어 주세요.", "#b5762f");
+        });
+      }
+    } catch (e) {
+      setMsg("소리를 재생할 수 없어요. 아래 안내대로 다른 브라우저로 열어 주세요.", "#b5762f");
+    }
+  });
+}
+function syncNameGate() {
+  var ok = nameInput.value.trim().length > 0;
+  secBtns.forEach(function (b) { b.disabled = !ok; });
+}
+nameInput.addEventListener("input", syncNameGate);
+nameInput.addEventListener("keydown", function (e) {
+  if (e.key === "Enter" && nameInput.value.trim()) secBtns[0].click();
+});
+function startSection(si) {
+  var typed = nameInput.value.trim();
+  if (!typed) { nameInput.focus(); return; }
+  studentName = typed;
+  warmUpVoice();
+  var s = SECTIONS[si];
+  for (var i = s.start; i < s.end; i++) { answersLog[i] = null; }
+  elapsed[si] = 0;
+  sent[si] = false;
+  clinicSent[si] = false;
+  Object.keys(CARD_AT).forEach(function (k) { if (+k >= s.start && +k < s.end) delete cardsShown[k]; });
+  current = s.start;
+  curSec = si;
+  lastTick = Date.now();
+  saveState();
+  step();
+}
+secBtns.forEach(function (b) {
+  b.addEventListener("click", function () { startSection(parseInt(b.getAttribute("data-sec"), 10)); });
+});
+
+var savedState = loadState();
+function applySaved(s) {
+  studentName = s.name;
+  current = s.current;
+  answersLog = (s.log || []).slice(0, ALL.length);
+  while (answersLog.length < ALL.length) answersLog.push(null);
+  elapsed = s.elapsed || new Array(NSEC).fill(0);
+  while (elapsed.length < NSEC) elapsed.push(0);
+  sent = s.sent || new Array(NSEC).fill(false);
+  while (sent.length < NSEC) sent.push(false);
+  clinicSent = s.clinicSent || new Array(NSEC).fill(false);
+  while (clinicSent.length < NSEC) clinicSent.push(false);
+  cardsShown = s.cards || {};
+  if (s.choices) {
+    ALL.forEach(function (q, i) { if (s.choices[i]) q.shuffled = s.choices[i]; });
+  }
+}
+if (savedState && savedState.log && savedState.log.some(function (l) { return !!l; })) {
+  var doneCnt = savedState.log.filter(function (l) { return !!l; }).length;
+  document.getElementById("resume-info").textContent =
+    savedState.name + " · " + doneCnt + "문제까지 푼 기록이 있어요. 이어서 풀까요?";
+  show("resume-card");
+} else {
+  syncNameGate();
+}
+document.getElementById("resume-btn").addEventListener("click", function () {
+  applySaved(savedState);
+  nameInput.value = studentName;
+  syncNameGate();
+  lastTick = Date.now();
+  curSec = secIndex(Math.min(current, ALL.length - 1));
+  var prevSec = current > 0 ? secIndex(current - 1) : -1;
+  if (prevSec >= 0 && current === SECTIONS[prevSec].end && secDone(prevSec)) {
+    showSectionResult(prevSec);
+  } else if (current >= ALL.length) {
+    showSectionResult(NSEC - 1);
+  } else { step(); }
+});
+document.getElementById("restart-btn").addEventListener("click", function () {
+  clearState();
+  answersLog = new Array(ALL.length).fill(null);
+  elapsed = new Array(NSEC).fill(0);
+  sent = new Array(NSEC).fill(false);
+  clinicSent = new Array(NSEC).fill(false);
+  cardsShown = {}; current = 0;
+  nameInput.value = "";
+  syncNameGate();
+  show("start-card");
+});
+document.getElementById("pick-sec-btn").addEventListener("click", function () {
+  nameInput.value = studentName; syncNameGate(); show("start-card");
+});
+document.getElementById("cr-pick-btn").addEventListener("click", function () {
+  nameInput.value = studentName; syncNameGate(); show("start-card");
+});
+
+/* ══════════ 낱말 배열(ord) ══════════ */
+function ordNorm(s) {
+  return String(s).toLowerCase().replace(/[.,?!;:]/g, "").replace(/\s+/g, " ").trim();
+}
+var ordPicked = [];
+function renderOrd(q, box) {
+  ordPicked = [];
+  var help = document.createElement("p");
+  help.className = "ord-help";
+  help.innerHTML = "아래 낱말을 <b>순서대로</b> 눌러 주세요. 잘못 눌렀으면 위쪽 칸의 낱말을 다시 눌러 뺄 수 있어요.";
+  var slot = document.createElement("div"); slot.className = "ord-slot";
+  var pool = document.createElement("div"); pool.className = "ord-pool";
+  var okBtn = document.createElement("button");
+  okBtn.className = "btn center"; okBtn.textContent = "다 골랐어요 · 확인하기"; okBtn.disabled = true;
+  var reBtn = document.createElement("button");
+  reBtn.className = "btn sub-btn center"; reBtn.textContent = "처음부터 다시 배열하기";
+  box.appendChild(help); box.appendChild(slot); box.appendChild(pool);
+  box.appendChild(okBtn); box.appendChild(reBtn);
+  function draw() {
+    slot.innerHTML = "";
+    if (ordPicked.length === 0) {
+      var ph = document.createElement("span");
+      ph.className = "ord-ph"; ph.textContent = "여기에 문장이 만들어져요";
+      slot.appendChild(ph);
+    }
+    ordPicked.forEach(function (ti, pos) {
+      var b = document.createElement("button");
+      b.className = "ord-tile picked"; b.textContent = q.tiles[ti];
+      b.addEventListener("click", function () { ordPicked.splice(pos, 1); draw(); });
+      slot.appendChild(b);
+    });
+    pool.innerHTML = "";
+    q.shuffled.forEach(function (ti) {
+      if (ordPicked.indexOf(ti) >= 0) return;
+      var b = document.createElement("button");
+      b.className = "ord-tile"; b.textContent = q.tiles[ti];
+      b.addEventListener("click", function () { ordPicked.push(ti); draw(); });
+      pool.appendChild(b);
+    });
+    okBtn.disabled = (ordPicked.length !== q.tiles.length);
+  }
+  reBtn.addEventListener("click", function () { ordPicked = []; draw(); });
+  okBtn.addEventListener("click", function () {
+    if (ordPicked.length !== q.tiles.length) return;
+    pick(ordPicked.map(function (ti) { return q.tiles[ti]; }).join(" "));
+  });
+  draw();
+}
+
+/* ══════════ 문제 표시 ══════════ */
+var CIRCLED = ["①", "②", "③", "④"];
+function showQuestion() {
+  var q = ALL[current];
+  var si = secIndex(current);
+  curSec = si;
+  var sec = SECTIONS[si];
+  document.getElementById("prog-num").textContent =
+    sec.name.split(" · ")[0] + "  ·  " + (current - sec.start + 1) + " / " + (sec.end - sec.start);
+  document.getElementById("prog-pct").textContent = "전체 " + Math.round(current / ALL.length * 100) + "%";
+  document.getElementById("bar-fill").style.width = ((current - sec.start) / (sec.end - sec.start) * 100) + "%";
+  document.getElementById("srctag").textContent = q.src;
+  document.getElementById("tipinner").innerHTML = "<b>" + q.src + "</b><br>" + (TIPS[q.src] || "");
+  document.getElementById("tipbox").open = false;
+  document.getElementById("qtext").innerHTML = "Q" + (current + 1) + ". " + q.q;
+  var box = document.getElementById("choices");
+  box.innerHTML = "";
+  document.getElementById("keyhint").classList.toggle("hidden", q.t === "ord");
+  if (q.t === "ord") { renderOrd(q, box); lastTick = Date.now(); window.scrollTo(0, 0); return; }
+  q.shuffled.forEach(function (c, i) {
+    var b = document.createElement("button");
+    b.className = "choice";
+    b.innerHTML = '<span class="num">' + CIRCLED[i] + "</span>" + c;
+    b.addEventListener("click", function () { pick(c); });
+    box.appendChild(b);
+  });
+  lastTick = Date.now();
+  window.scrollTo(0, 0);
+}
+
+document.addEventListener("keydown", function (e) {
+  var n = parseInt(e.key, 10);
+  if (!(n >= 1 && n <= 4)) return;
+  if (MODE === "quiz" && !document.getElementById("quiz-card").classList.contains("hidden")) {
+    var q = ALL[current];
+    if (q && q.shuffled && q.t !== "ord" && n <= q.shuffled.length) pick(q.shuffled[n - 1]);
+  } else if (MODE === "clinic" && !document.getElementById("clinic-card").classList.contains("hidden")) {
+    var cq = CLINIC[clinicList[clinicPos]];
+    if (cq && cq.shuffled && cq.t !== "ord" && n <= cq.shuffled.length) pick(cq.shuffled[n - 1]);
+  }
+});
+
+var locked = false;
+function pick(choice) {
+  if (locked) return; locked = true;
+  if (MODE === "clinic") { clinicAnswer(choice); return; }
+  var q = ALL[current];
+  var si = secIndex(current);
+  var ok = (q.t === "ord") ? (ordNorm(choice) === ordNorm(q.answer)) : (choice === q.answer);
+  answersLog[current] = { no: current + 1, ok: ok, chosen: choice, answer: q.answer };
+  elapsed[si] += Math.min(180, Math.round((Date.now() - lastTick) / 1000));
+  var qi = current;
+  current++;
+  saveState();
+  playAnswer("q" + pad2(qi + 1), q.say, function () {
+    locked = false;
+    if (current === SECTIONS[si].end) showSectionResult(si);
+    else step();
+  });
+}
+
+/* ══════════ 공통 도구 ══════════ */
+function copyText(btn, text, doneLabel) {
+  navigator.clipboard.writeText(text).then(function () {
+    btn.textContent = doneLabel;
+  }).catch(function () {
+    prompt("아래 내용을 길게 눌러 복사하세요", text);
+  });
+}
+function plain(s) { return String(s).replace(/<[^>]*>/g, ""); }
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+function secStats(si) {
+  var sec = SECTIONS[si];
+  var slice = answersLog.slice(sec.start, sec.end).filter(function (l) { return !!l; });
+  var score = slice.filter(function (l) { return l.ok; }).length;
+  var wrong = slice.filter(function (l) { return !l.ok; }).map(function (l) { return l.no; });
+  return { slice: slice, score: score, total: sec.end - sec.start, wrong: wrong };
+}
+function sectionMsg(si) {
+  var st = secStats(si);
+  return "[영핏 실수 잡기 " + (si + 1) + "/" + NSEC + " 결과]\n학생: " + studentName +
+         "\n영역: " + SECTIONS[si].name +
+         "\n점수: " + st.score + "/" + st.total +
+         "\n풀이 시간: " + Math.max(1, Math.round(elapsed[si] / 60)) + "분" +
+         "\n틀린 문항: " + (st.wrong.length ? st.wrong.join(", ") : "없음") +
+         "\n- 영핏 지나티처";
+}
+function totalMsg() {
+  var parts = SECTIONS.map(function (s, si) {
+    var st = secStats(si);
+    return (si + 1) + "영역 " + st.score + "/" + st.total;
+  });
+  var done = answersLog.filter(function (l) { return !!l; });
+  var totalScore = done.filter(function (l) { return l.ok; }).length;
+  var allWrong = done.filter(function (l) { return !l.ok; }).map(function (l) { return l.no; });
+  return "[영핏 실수 잡기 최종 결과]\n학생: " + studentName +
+         "\n내용: 수량 표현 + much/many/little/few (30문항)" +
+         "\n" + parts.join(" / ") +
+         "\n총점: " + totalScore + "/" + ALL.length +
+         "\n틀린 문항: " + (allWrong.length ? allWrong.join(", ") : "없음") +
+         "\n- 영핏 지나티처";
+}
+function clinicMsg() {
+  var score = clinicLog.filter(function (l) { return l && l.ok; }).length;
+  return "[영핏 오답 클리닉 결과]\n학생: " + studentName +
+         "\n영역: " + SECTIONS[clinicSec].name +
+         "\n클리닉 점수: " + score + "/" + clinicLog.length +
+         "\n다시 풀어 본 문항: " + clinicList.map(function (i) { return i + 1; }).join(", ") +
+         "\n- 영핏 지나티처";
+}
+
+/* ══════════ 영역 결과 ══════════ */
+function showSectionResult(si) {
+  MODE = "quiz";
+  var st = secStats(si);
+  var allDone = firstUndoneSec() === -1;
+  document.getElementById("sec-result-title").textContent =
+    allDone ? "모든 영역 완료! 정말 수고했어요" : (si + 1) + "영역 완료! 잘했어요";
+  document.getElementById("sec-score").textContent = st.score + " / " + st.total;
+  document.getElementById("sec-wrong").textContent =
+    st.wrong.length ? "틀린 문항: " + st.wrong.join(", ") + " — 아래 해설을 읽고 오답 클리닉으로 한 번 더 잡아요!"
+                    : "이 영역 전부 정답! 최고예요";
+
+  var copyBtn = document.getElementById("sec-copy-btn");
+  copyBtn.textContent = (si + 1) + "영역 결과 복사 (카톡용)";
+  copyBtn.onclick = function () { copyText(copyBtn, sectionMsg(si), "복사 완료! 카톡에 붙여넣기 하세요"); };
+
+  var clinicBtn = document.getElementById("clinic-start-btn");
+  if (st.wrong.length) {
+    clinicBtn.classList.remove("hidden");
+    clinicBtn.textContent = "오답 클리닉 시작 · " + st.wrong.length + "문제 다시 잡기";
+    clinicBtn.onclick = function () { startClinic(si); };
+  } else {
+    clinicBtn.classList.add("hidden");
+  }
+
+  var nextBtn = document.getElementById("next-sec-btn");
+  var nextSi = firstUndoneSec();
+  if (allDone) {
+    nextBtn.classList.add("hidden");
+    var totalScore = answersLog.filter(function (l) { return l && l.ok; }).length;
+    document.getElementById("total-block").classList.remove("hidden");
+    document.getElementById("total-score").textContent = totalScore + " / " + ALL.length;
+    document.getElementById("total-detail").textContent =
+      SECTIONS.map(function (s, idx) { var t = secStats(idx); return (idx + 1) + "영역 " + t.score + "/" + t.total; }).join("  ·  ");
+    var totalBtn = document.getElementById("total-copy-btn");
+    totalBtn.onclick = function () { copyText(totalBtn, totalMsg(), "복사 완료! 카톡에 붙여넣기 하세요"); };
+  } else {
+    nextBtn.classList.remove("hidden");
+    document.getElementById("total-block").classList.add("hidden");
+    nextBtn.textContent = "쉬었다가 " + (nextSi + 1) + "영역 개념 카드 보기";
+    nextBtn.onclick = function () { current = SECTIONS[nextSi].start; curSec = nextSi; lastTick = Date.now(); saveState(); step(); };
+  }
+
+  var expBox = document.getElementById("sec-explanations");
+  expBox.innerHTML = "";
+  st.slice.forEach(function (log) {
+    var q = ALL[log.no - 1];
+    var d = document.createElement("div");
+    d.className = "exp" + (log.ok ? "" : " wrong");
+    var ansLine = log.ok ? "" :
+      '<span class="ans-line">내가 고른 답: ' + esc(plain(log.chosen)) + " → 정답: " + esc(plain(q.answer)) + "</span>";
+    d.innerHTML = '<div class="exp-head"><b>Q' + log.no + " " +
+      (log.ok ? "정답!" : "오답 - 다시 보기") + "</b></div>" + ansLine + q.exp;
+    expBox.appendChild(d);
+  });
+
+  if (!sent[si]) {
+    sent[si] = true;
+    saveState();
+    engfitSubmit({
+      quizId: "basic-kyc-0907-p" + (si + 1),
+      quizTitle: "김예찬 실수 잡기 9/7 — " + (si + 1) + "영역",
+      student: studentName,
+      score: st.score,
+      total: st.total,
+      wrong: st.wrong,
+      durationSec: elapsed[si],
+      detail: st.slice
+    });
+  }
+  show("sec-result-card");
+}
+
+/* ══════════ 오답 클리닉 ══════════ */
+function startClinic(si) {
+  clinicSec = si;
+  var st = secStats(si);
+  clinicList = st.wrong.map(function (no) { return no - 1; });
+  clinicPos = 0;
+  clinicLog = [];
+  MODE = "clinic";
+  lastTick = Date.now();
+  showWhy();
+}
+function showWhy() {
+  var idx = clinicList[clinicPos];
+  var q = ALL[idx];
+  var log = answersLog[idx];
+  document.getElementById("why-num").textContent =
+    "왜 틀렸을까?  " + (clinicPos + 1) + " / " + clinicList.length;
+  document.getElementById("why-bar").style.width = (clinicPos / clinicList.length * 100) + "%";
+  document.getElementById("whybox").innerHTML =
+    "<h2>Q" + (idx + 1) + " · 왜 틀렸을까?</h2>" +
+    '<span class="row"><span class="k">문제</span><br>' + q.q + "</span>" +
+    '<span class="row"><span class="k">내가 고른 답</span> ' + esc(plain(log ? log.chosen : "")) + "<br>" +
+    '<span class="k">정답</span> ' + esc(plain(q.answer)) + "</span>" +
+    q.exp;
+  document.getElementById("rulebox").innerHTML =
+    '<span class="h">규칙 다시 보기 — ' + q.src + "</span>" + (TIPS[q.src] || "");
+  show("clinic-why-card");
+}
+document.getElementById("why-next").addEventListener("click", function () {
+  MODE = "clinic";
+  show("clinic-card");
+  showClinicQuestion();
+});
+function showClinicQuestion() {
+  var idx = clinicList[clinicPos];
+  var cq = CLINIC[idx];
+  document.getElementById("cq-num").textContent =
+    "클리닉 문제  " + (clinicPos + 1) + " / " + clinicList.length;
+  document.getElementById("cq-bar").style.width = ((clinicPos + 0.5) / clinicList.length * 100) + "%";
+  document.getElementById("cq-src").textContent = "Q" + (idx + 1) + " 같은 개념 · " + ALL[idx].src;
+  document.getElementById("cq-text").innerHTML = cq.q;
+  var box = document.getElementById("cq-choices");
+  box.innerHTML = "";
+  document.getElementById("cq-keyhint").classList.toggle("hidden", cq.t === "ord");
+  if (cq.t === "ord") { renderOrd(cq, box); lastTick = Date.now(); window.scrollTo(0, 0); return; }
+  cq.shuffled.forEach(function (c, i) {
+    var b = document.createElement("button");
+    b.className = "choice";
+    b.innerHTML = '<span class="num">' + CIRCLED[i] + "</span>" + c;
+    b.addEventListener("click", function () { pick(c); });
+    box.appendChild(b);
+  });
+  lastTick = Date.now();
+  window.scrollTo(0, 0);
+}
+function clinicAnswer(choice) {
+  var idx = clinicList[clinicPos];
+  var cq = CLINIC[idx];
+  var ok = (cq.t === "ord") ? (ordNorm(choice) === ordNorm(cq.answer)) : (choice === cq.answer);
+  clinicLog.push({ no: idx + 1, ok: ok, chosen: choice, answer: cq.answer });
+  clinicPos++;
+  playAnswer("c" + pad2(idx + 1), cq.say, function () {
+    locked = false;
+    if (clinicPos >= clinicList.length) showClinicResult();
+    else showWhy();
+  });
+}
+function showClinicResult() {
+  MODE = "quiz";
+  var score = clinicLog.filter(function (l) { return l.ok; }).length;
+  var total = clinicLog.length;
+  document.getElementById("cr-score").textContent = score + " / " + total;
+  document.getElementById("cr-title").textContent =
+    (score === total) ? "오답 클리닉 전부 정답! 완벽해요" : "오답 클리닉 완료! 수고했어요";
+  document.getElementById("cr-msg").textContent =
+    (score === total)
+      ? "틀렸던 곳을 전부 다시 잡았어요. 이제 이 실수는 안 나올 거예요!"
+      : "한 번 더 보면 확실해져요. 아래 해설을 소리 내어 읽어 보세요.";
+
+  var crCopy = document.getElementById("cr-copy-btn");
+  crCopy.textContent = "클리닉 결과 복사 (카톡용)";
+  crCopy.onclick = function () { copyText(crCopy, clinicMsg(), "복사 완료! 카톡에 붙여넣기 하세요"); };
+
+  var nextSi = firstUndoneSec();
+  var crNext = document.getElementById("cr-next-btn");
+  if (nextSi === -1) {
+    crNext.textContent = "영역 결과 화면으로 돌아가기";
+    crNext.onclick = function () { showSectionResult(clinicSec); };
+  } else {
+    crNext.textContent = "쉬었다가 " + (nextSi + 1) + "영역 개념 카드 보기";
+    crNext.onclick = function () { current = SECTIONS[nextSi].start; curSec = nextSi; lastTick = Date.now(); saveState(); step(); };
+  }
+
+  var box = document.getElementById("cr-explanations");
+  box.innerHTML = "";
+  clinicLog.forEach(function (log, i) {
+    var idx = clinicList[i];
+    var cq = CLINIC[idx];
+    var d = document.createElement("div");
+    d.className = "exp" + (log.ok ? "" : " wrong");
+    var ansLine = log.ok ? "" :
+      '<span class="ans-line">내가 고른 답: ' + esc(plain(log.chosen)) + " → 정답: " + esc(plain(cq.answer)) + "</span>";
+    d.innerHTML = '<div class="exp-head"><b>Q' + (idx + 1) + " 클리닉 " +
+      (log.ok ? "정답!" : "다시 보기") + "</b></div>" + ansLine + cq.exp;
+    box.appendChild(d);
+  });
+
+  if (!clinicSent[clinicSec]) {
+    clinicSent[clinicSec] = true;
+    saveState();
+    engfitSubmit({
+      quizId: "basic-kyc-0907-p" + (clinicSec + 1) + "-clinic",
+      quizTitle: "김예찬 오답 클리닉 9/7 — " + (clinicSec + 1) + "영역",
+      student: studentName,
+      score: score,
+      total: total,
+      wrong: clinicLog.filter(function (l) { return !l.ok; }).map(function (l) { return l.no; }),
+      durationSec: 0,
+      detail: clinicLog
+    });
+  }
+  show("clinic-result-card");
+}
+</script>
+</body>
+</html>
